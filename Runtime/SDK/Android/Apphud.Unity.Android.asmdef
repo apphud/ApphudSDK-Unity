@@ -1,0 +1,21 @@
+{
+    "name": "Apphud.Unity.Android",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7a660fea31b0a473c9362018768e6ad0",
+        "GUID:2c62968249dae42df8c6561be954ad50",
+        "GUID:95e6b604bb1774c7d8503b7102e609a9"
+    ],
+    "includePlatforms": [
+        "Android",
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

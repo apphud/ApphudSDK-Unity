@@ -1,0 +1,16 @@
+{
+    "name": "Apphud.Unity.Common",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7a660fea31b0a473c9362018768e6ad0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
