@@ -15,11 +15,11 @@ namespace Apphud.Unity.IOS.SDK
 
         [DllImport("__Internal")]
         private static extern void ApphudUnity_startWithApiKey(string apiKey, bool observerMode, IntPtr callback);
-        internal static void Start(string apiKey, Action<string> callback) => ApphudUnity_startWithApiKey(apiKey, false, callback.ToIntPtr());
+        internal static void Start(string apiKey, Action<string> callback, bool observerMode) => ApphudUnity_startWithApiKey(apiKey, observerMode, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         private static extern void ApphudUnity_startWithApiKeyAndUserId(string apiKey, string userId, bool observerMode, IntPtr callback);
-        internal static void Start(string apiKey, string userId, Action<string> callback) => ApphudUnity_startWithApiKeyAndUserId(apiKey, userId, false, callback.ToIntPtr());
+        internal static void Start(string apiKey, string userId, Action<string> callback, bool observerMode) => ApphudUnity_startWithApiKeyAndUserId(apiKey, userId, observerMode, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         internal static extern void ApphudUnity_logOut();

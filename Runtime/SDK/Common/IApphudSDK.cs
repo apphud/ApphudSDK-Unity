@@ -8,8 +8,8 @@ namespace Apphud.Unity.Common
     {
         string UserId { get; }
         string DeviceId { get; }
-        void Start(string apiKey, Action<ApphudUser> callback);
-        void Start(string apiKey, string userId, Action<ApphudUser> callback);
+        void Start(string apiKey, Action<ApphudUser> callback, bool observerMode);
+        void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode);
         void LogOut();
         void UpdateUserId(string userId);
 

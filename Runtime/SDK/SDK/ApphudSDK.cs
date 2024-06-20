@@ -37,7 +37,7 @@ namespace Apphud.Unity.SDK
         /// <param name="callback">(Optional) A callback function that is invoked with the `ApphudUser` object after the SDK initialization is complete. 
         /// __Note__: Do not store `ApphudUser`instance in your own code, since it may change at runtime.
         /// </param>
-        public static void Start(string apiKey, Action<ApphudUser> callback) => _sdk.Start(apiKey, callback);
+        public static void Start(string apiKey, Action<ApphudUser> callback, bool observerMode = false) => _sdk.Start(apiKey, callback, observerMode);
 
         /// <summary>
         /// Initializes the Apphud SDK. This method should be called during the app launch.
@@ -47,7 +47,7 @@ namespace Apphud.Unity.SDK
         /// <param name="callback">(Optional) A callback function that is invoked with the `ApphudUser` object after the SDK initialization is complete. 
         /// __Note__: Do not store `ApphudUser`instance in your own code, since it may change at runtime.
         /// </param>
-        public static void Start(string apiKey, string userId, Action<ApphudUser> callback) => _sdk.Start(apiKey, userId, callback);
+        public static void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode = false) => _sdk.Start(apiKey, userId, callback, observerMode);
 
         /// <summary>
         /// Use this method if you have a custom login system with your own backend logic.

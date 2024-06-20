@@ -22,14 +22,14 @@ namespace Apphud.Unity.IOS.SDK
             ApphudIOSInternal.ApphudUnity_setHeaders();
         }
 
-        public void Start(string apiKey, Action<ApphudUser> callback)
+        public void Start(string apiKey, Action<ApphudUser> callback, bool observerMode)
         {
-            ApphudIOSInternal.Start(apiKey, json => callback(new IOSApphudUser(json)));
+            ApphudIOSInternal.Start(apiKey, json => callback(new IOSApphudUser(json)), observerMode);
         }
 
-        public void Start(string apiKey, string userId, Action<ApphudUser> callback)
+        public void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode)
         {
-            ApphudIOSInternal.Start(apiKey, userId, json => callback(new IOSApphudUser(json)));
+            ApphudIOSInternal.Start(apiKey, userId, json => callback(new IOSApphudUser(json)), observerMode);
         }
 
         public void LogOut() => ApphudIOSInternal.ApphudUnity_logOut();
