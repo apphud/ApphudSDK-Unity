@@ -128,6 +128,8 @@ namespace Apphud.Unity.SDK
         /// </summary>
         /// <param name="paywall">The `ApphudPaywall` object representing the paywall that was closed.</param>
         public static void PaywallClosed(ApphudPaywall paywall) => _sdk.PaywallClosed(paywall);
+        
+		public static void WillPurchaseProductFrom(string placementIdentifier, string paywallIdentifier = null) => _sdk.WillPurchaseProductFrom(placementIdentifier, paywallIdentifier);
 
         /// <summary>
         /// Initiates the purchase process for a specified product and automatically

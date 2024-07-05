@@ -19,6 +19,7 @@ namespace Apphud.Unity.Common
         List<ApphudNonRenewingPurchase> NonRenewingPurchases();
         void PaywallShown(ApphudPaywall paywall);
         void PaywallClosed(ApphudPaywall paywall);
+        void WillPurchaseProductFrom(string placementIdentifier, string paywallIdentifier);
         void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null);
         void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback);
         void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback);

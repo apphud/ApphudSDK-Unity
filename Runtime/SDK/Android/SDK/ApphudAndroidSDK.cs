@@ -34,6 +34,10 @@ namespace Apphud.Unity.Android.SDK
         public void PaywallShown(ApphudPaywall paywall) => ApphudAndroidInternal.PaywallShown(paywall);
 
         public void PaywallClosed(ApphudPaywall paywall) => ApphudAndroidInternal.PaywallClosed(paywall);
+        
+		public void WillPurchaseProductFrom(string placementIdentifier, string paywallIdentifier) 
+		{
+		}
 
         public void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null)
         {

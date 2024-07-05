@@ -48,6 +48,9 @@ namespace Apphud.Unity.IOS.SDK
         internal static extern void ApphudUnity_paywallClosed(string placementIdentifier, string paywallIdentifier);
 
         [DllImport("__Internal")]
+        internal static extern void ApphudUnity_willPurchaseProductFrom(string placementIdentifier, string paywallIdentifier);
+
+        [DllImport("__Internal")]
         private static extern void ApphudUnity_purchase(string productId, string placementIdentifier, string paywallIdentifier, IntPtr callback);
         internal static void Purchase(string productId, string placementIdentifier, string paywallIdentifier, Action<string> callback) => ApphudUnity_purchase(productId, placementIdentifier, paywallIdentifier, callback.ToIntPtr());
 
