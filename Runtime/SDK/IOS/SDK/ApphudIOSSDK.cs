@@ -82,7 +82,7 @@ namespace Apphud.Unity.IOS.SDK
 
         public void WillPurchaseProductFrom(string placementIdentifier, string paywallIdentifier)
         {
-            ApphudIOSInternal.ApphudUnity_willPurchaseProductFrom(paywallId, placementIdentifier);
+            ApphudIOSInternal.ApphudUnity_willPurchaseProductFrom(placementIdentifier, placementIdentifier);
         }
 
         public void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null)
