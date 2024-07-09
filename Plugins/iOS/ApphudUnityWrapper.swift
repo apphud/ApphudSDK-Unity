@@ -65,7 +65,7 @@ import ApphudSDK
     @MainActor
     @objc public static func willPurchaseProductFrom(identifier:String, placementIdentifier: String?) -> Void {
         Task{@MainActor in
-            Apphud.willPurchaseProductFrom(identifier, placementIdentifier)
+            Apphud.willPurchaseProductFrom(paywallIdentifier: identifier, placementIdentifier: placementIdentifier)
         }
     }
     

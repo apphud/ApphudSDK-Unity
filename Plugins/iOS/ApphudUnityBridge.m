@@ -249,7 +249,7 @@ extern "C" {
 #endif
 
 void ApphudUnity_willPurchaseProductFrom(const char *paywallIdentifier, const char *placementIdentifier) {
-    [ApphudUnityWrapper willPurchaseProductFromWithIdentifier:cstringToString(paywallIdentifier) placementIdentifier:cstringToString(placementIdentifier)];
+    [ApphudUnityWrapper willPurchaseProductFromIdentifier:cstringToString(paywallIdentifier) placementIdentifier:cstringToString(placementIdentifier)];
 }
 
 #ifdef __cplusplus
