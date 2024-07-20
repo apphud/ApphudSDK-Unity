@@ -1,0 +1,19 @@
+{
+    "name": "Apphud.Unity.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Apphud.Unity.Domain"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "iOS"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -19,9 +19,7 @@ namespace Apphud.Unity.IOS.SDK
         public ApphudIOSSDK()
         {
             IOSCallbackAction.InitializeOnce();
-			#if !UNITY_EDITOR
             ApphudIOSInternal.ApphudUnity_setHeaders();
-			#endif
         }
 
         public void Start(string apiKey, Action<ApphudUser> callback, bool observerMode)

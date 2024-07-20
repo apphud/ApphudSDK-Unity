@@ -13,7 +13,9 @@ namespace Apphud.Unity.SDK
 {
     public static class ApphudSDK
     {
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+        private static readonly IApphudSDK _sdk = new ApphudEditorSDK();
+#elif UNITY_ANDROID
         private static readonly IApphudSDK _sdk = new ApphudAndroidSDK();
 #elif UNITY_IOS
         private static readonly IApphudSDK _sdk = new ApphudIOSSDK();
