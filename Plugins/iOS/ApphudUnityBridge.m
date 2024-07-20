@@ -248,7 +248,7 @@ void ApphudUnity_paywallClosed(const char *paywallIdentifier, const char *placem
 extern "C" {
 #endif
 
-void ApphudUnity_willPurchaseProductFrom(const char *paywallIdentifier, const char *placementIdentifier) {
+void ApphudUnity_willPurchaseProductFrom(const char *placementIdentifier, const char *paywallIdentifier) {
     [ApphudUnityWrapper willPurchaseProductFromIdentifier:cstringToString(paywallIdentifier) placementIdentifier:cstringToString(placementIdentifier)];
 }
 
