@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Apphud.Unity.Common;
 using Apphud.Unity.Domain;
 
-#if UNITY_ANDROID
+#if UNITY_EDITOR
+using Apphud.Unity.Simulator;
+#elif UNITY_ANDROID
 using Apphud.Unity.Android.SDK;
 #elif UNITY_IOS
 using Apphud.Unity.IOS.SDK;
@@ -14,7 +16,7 @@ namespace Apphud.Unity.SDK
     public static class ApphudSDK
     {
 #if UNITY_EDITOR
-        private static readonly IApphudSDK _sdk = new ApphudEditorSDK();
+        private static readonly IApphudSDK _sdk = new ApphudSimulatorSDK();
 #elif UNITY_ANDROID
         private static readonly IApphudSDK _sdk = new ApphudAndroidSDK();
 #elif UNITY_IOS

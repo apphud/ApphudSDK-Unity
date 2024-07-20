@@ -1,7 +1,8 @@
 {
-    "name": "Apphud.Unity.Editor",
+    "name": "Apphud.Unity.Simulator",
     "rootNamespace": "",
     "references": [
+        "Apphud.Unity.Common",
         "Apphud.Unity.Domain"
     ],
     "includePlatforms": [
