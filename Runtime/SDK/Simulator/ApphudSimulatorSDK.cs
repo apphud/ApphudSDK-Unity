@@ -1,11 +1,13 @@
 using Apphud.Unity.Common;
 using Apphud.Unity.Domain;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using Unity.Plastic.Newtonsoft.Json;
 
 namespace Apphud.Unity.Simulator {
 	public class ApphudSimulatorSDK : IApphudSDK {
+
+		public static List<string> DebugPlacements;
 		
 		public void Start(string apiKey, Action<ApphudUser> callback, bool observerMode) {
 		}
@@ -20,6 +22,11 @@ namespace Apphud.Unity.Simulator {
 		}
 
 		public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts) {
+			if (DebugPlacements != null) {
+				var list = DebugPlacements.ConvertAll(JsonConvert.DeserializeObject<ApphudPlacement>);
+				// todo: delay
+				callback(list, null);
+			}
 		}
 
 		public void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts) {
