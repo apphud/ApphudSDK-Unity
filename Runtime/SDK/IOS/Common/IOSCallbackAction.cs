@@ -76,7 +76,9 @@ namespace Apphud.Unity.IOS.Common
                 if (!m_IsInitialized)
                 {
                     m_IsInitialized = true;
+                    #if !UNITY_EDITOR
                     RegisterCallbackDelegate(OnCallbackBool, OnCallback, OnCallback2, OnCallback3);
+                    #endif
                 }
             }
         }
