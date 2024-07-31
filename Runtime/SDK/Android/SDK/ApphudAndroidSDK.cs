@@ -17,8 +17,8 @@ namespace Apphud.Unity.Android.SDK
             ApphudAndroidInternal.SetHeaders();
         }
 
-        public void Start(string apiKey, Action<ApphudUser> callback) => ApphudAndroidInternal.Start(apiKey, callback);
-        public void Start(string apiKey, string userId, Action<ApphudUser> callback) => ApphudAndroidInternal.Start(apiKey, userId, callback);
+        public void Start(string apiKey, Action<ApphudUser> callback, bool observerMode) => ApphudAndroidInternal.Start(apiKey, callback, observerMode);
+        public void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode) => ApphudAndroidInternal.Start(apiKey, userId, callback, observerMode);
 
         public void LogOut() => ApphudAndroidInternal.LogOut();
         public void UpdateUserId(string userId) => ApphudAndroidInternal.UpdateUserId(userId);
@@ -67,6 +67,32 @@ namespace Apphud.Unity.Android.SDK
         public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
         {
             ApphudAndroidInternal.AddAttribution(provider, data, identifier);
+        }
+
+#if APPHUD_FB
+        public void AddFacebookAttribution()
+        {
+            ApphudFacebookAttribution.Add();
+        }
+#endif
+        public void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback)
+        {
+            ApphudAndroidInternal.LoadFallbackPaywalls(callback);
+        }
+
+        public bool IsFallbackMode()
+        {
+            return ApphudAndroidInternal.IsFallbackMode();
+        }
+
+        public void InvalidatePaywallsCache()
+        {
+            ApphudAndroidInternal.InvalidatePaywallsCache();
+        }
+
+        public void TrackPurchase(string productID, string offerIdToken, string paywallIdentifier, string placementIdentifier)
+        {
+            ApphudAndroidInternal.TrackPurchase(productID, offerIdToken, paywallIdentifier, placementIdentifier);
         }
     }
 }

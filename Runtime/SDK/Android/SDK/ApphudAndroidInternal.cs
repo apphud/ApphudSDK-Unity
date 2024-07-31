@@ -31,23 +31,25 @@ namespace Apphud.Unity.Android.SDK
         internal static string UserId => Instance.Call<string>("userId");
         internal static string DeviceId => Instance.Call<string>("deviceId");
 
-        internal static void Start(string apiKey, Action<ApphudUser> callback)
+        internal static void Start(string apiKey, Action<ApphudUser> callback, bool observerMode)
         {
             Instance.Call(
                 "start",
                 AndroidApp.CurrentActivity,
                 apiKey,
+                observerMode,
                 new KotlinActionWrapper1(p1 => callback(new AndroidApphudUser(p1)), _debugLogsEnabled)
             );
         }
 
-        internal static void Start(string apiKey, string userId, Action<ApphudUser> callback)
+        internal static void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode)
         {
             Instance.Call(
                "start",
                AndroidApp.CurrentActivity,
                apiKey,
                userId,
+               observerMode,
                new KotlinActionWrapper1(p1 => callback(new AndroidApphudUser(p1)), _debugLogsEnabled)
            );
         }
@@ -57,25 +59,51 @@ namespace Apphud.Unity.Android.SDK
 
         internal static void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int? maxAttempts)
         {
-            Instance.Call(
-                "fetchPlacements",
-                new AndroidJavaObject("java.lang.Integer", maxAttempts),
-                new KotlinActionWrapper2((javaApphudPlacementList, javaApphudError) => callback(
-                    new JavaList<ApphudPlacement>(
-                        javaApphudPlacementList,
-                        javaApphudPlacement => new AndroidApphudPlacement(javaApphudPlacement)
-                    ),
-                    javaApphudError != null ? new AndroidApphudError(javaApphudError) : null),
-                    _debugLogsEnabled
-                )
-            );
+            using (AndroidJavaClass apphudClass = new AndroidJavaClass("com.apphud.sdk.ApphudErrorKt"))
+            {
+                double defaultMaxTimeout = apphudClass.GetStatic<double>("APPHUD_DEFAULT_MAX_TIMEOUT");
+
+                Instance.Call(
+                    "fetchPlacements",
+                    defaultMaxTimeout,
+                    new KotlinActionWrapper2((javaApphudPlacementList, javaApphudError) => callback(
+                        new JavaList<ApphudPlacement>(
+                            javaApphudPlacementList,
+                            javaApphudPlacement => new AndroidApphudPlacement(javaApphudPlacement)
+                        ),
+                        javaApphudError != null ? new AndroidApphudError(javaApphudError) : null),
+                        _debugLogsEnabled
+                    )
+                );
+            }
         }
 
         internal static void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int? maxAttempts)
         {
+            using (AndroidJavaClass apphudClass = new AndroidJavaClass("com.apphud.sdk.ApphudErrorKt"))
+            {
+                double defaultMaxTimeout = apphudClass.GetStatic<double>("APPHUD_DEFAULT_MAX_TIMEOUT");
+
+                Instance.Call(
+                    "paywallsDidLoadCallback",
+                    defaultMaxTimeout,
+                    new KotlinActionWrapper2((javaApphudPaywallsList, javaApphudError) => callback(
+                        new JavaList<ApphudPaywall>(
+                            javaApphudPaywallsList,
+                            javaApphudPaywall => new AndroidApphudPaywall(javaApphudPaywall)
+                        ),
+                        javaApphudError != null ? new AndroidApphudError(javaApphudError) : null),
+                        _debugLogsEnabled
+                    )
+                );
+            }
+        }
+
+
+        internal static void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback)
+        {
             Instance.Call(
-                "paywallsDidLoadCallback",
-                new AndroidJavaObject("java.lang.Integer", maxAttempts),
+                "loadFallbackPaywalls",
                 new KotlinActionWrapper2((javaApphudPaywallsList, javaApphudError) => callback(
                     new JavaList<ApphudPaywall>(
                         javaApphudPaywallsList,
@@ -188,14 +216,29 @@ namespace Apphud.Unity.Android.SDK
 
         internal static void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
         {
-            Instance.Call("addAttribution", provider.ToJavaEnum("com.apphud.sdk.ApphudAttributionProvider"), data.ToJavaMap(), identifier);
+            Instance.Call("addAttribution", provider.ToJavaEnum("com.apphud.sdk.ApphudAttributionProvider"), data.ToJavaMap(false), identifier);
+        }
+
+        internal static bool IsFallbackMode()
+        {
+            return Instance.Call<bool>("isFallbackMode");
+        }
+
+        internal static void InvalidatePaywallsCache()
+        {
+            Instance.Call("invalidatePaywallsCache");
+        }
+
+        internal static void TrackPurchase(string productID, string offerIdToken, string paywallIdentifier, string placementIdentifier)
+        {
+            Instance.Call("trackPurchase", productID, offerIdToken, paywallIdentifier, placementIdentifier);
         }
 
         internal static void SetHeaders()
         {
             using (var headersInterceptor = new AndroidJavaClass("com.apphud.sdk.managers.HeadersInterceptor"))
             {
-                headersInterceptor.SetStatic("X_SDK_VERSION", "0.9.0");
+                headersInterceptor.SetStatic("X_SDK_VERSION", "1.1.0");
                 headersInterceptor.SetStatic("X_SDK", "unity");
             }
         }

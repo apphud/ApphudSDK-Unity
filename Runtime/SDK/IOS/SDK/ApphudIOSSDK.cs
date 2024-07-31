@@ -22,14 +22,14 @@ namespace Apphud.Unity.IOS.SDK
             ApphudIOSInternal.ApphudUnity_setHeaders();
         }
 
-        public void Start(string apiKey, Action<ApphudUser> callback)
+        public void Start(string apiKey, Action<ApphudUser> callback, bool observerMode)
         {
-            ApphudIOSInternal.Start(apiKey, json => callback(new IOSApphudUser(json)));
+            ApphudIOSInternal.Start(apiKey, json => callback(new IOSApphudUser(json)), observerMode);
         }
 
-        public void Start(string apiKey, string userId, Action<ApphudUser> callback)
+        public void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode)
         {
-            ApphudIOSInternal.Start(apiKey, userId, json => callback(new IOSApphudUser(json)));
+            ApphudIOSInternal.Start(apiKey, userId, json => callback(new IOSApphudUser(json)), observerMode);
         }
 
         public void LogOut() => ApphudIOSInternal.ApphudUnity_logOut();
@@ -137,12 +137,59 @@ namespace Apphud.Unity.IOS.SDK
 
         public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifer = null)
         {
-            ApphudIOSInternal.ApphudUnity_addAttribution(provider.ToString(), data != null ? JsonConvert.SerializeObject(data) : null, identifer);
+            string jsonData = null;
+
+            if (data != null)
+            {
+                JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+
+                jsonData = JsonConvert.SerializeObject(data, Formatting.Indented, serializerSettings);
+            }
+
+            ApphudIOSInternal.AddAttribution(provider, jsonData, identifer, status => { });
+        }
+
+#if APPHUD_FB
+        public void AddFacebookAttribution()
+        {
+            ApphudIOSInternal.AddFBAttribution(status => {});
+        }
+#endif
+
+        public void TrackAppleSearchAds()
+        {
+            ApphudIOSInternal.TrackAppleSearchAds(status => { });
+        }
+
+        public void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback)
+        {
+            ApphudIOSInternal.LoadFallbackPaywallsWithCallback((paywallsJson, error) => callback(
+                paywallsJson.ToListFromJson<ApphudPaywall, IOSApphudPaywallJson>(json => new IOSApphudPaywall(json, null)),
+                error != null ? new IOSApphudError(error) : null)
+            );
         }
 
         public void SetDeviceIdentifiers(string idfa, string idfv)
         {
             ApphudIOSInternal.ApphudUnity_setDeviceIdentifiers(idfa, idfv);
+        }
+
+        public void SetPaywallsCacheTimeout(double value)
+        {
+            ApphudIOSInternal.ApphudUnity_setPaywallsCacheTimeout(value);
+        }
+
+        public void SubmitPushNotificationsTokenString(string str, Action<bool> callback)
+        {
+            ApphudIOSInternal.SubmitPushNotificationsTokenString(str, callback);
+        }
+
+        public void WillPurchaseProductFrom(string paywallIdentifier, string placementIdentifier)
+        {
+            ApphudIOSInternal.ApphudUnity_willPurchaseProductFrom(paywallIdentifier, placementIdentifier);
         }
     }
 }

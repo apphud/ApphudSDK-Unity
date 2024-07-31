@@ -75,17 +75,20 @@ namespace Apphud.Unity.Android
             return enumClass.CallStatic<AndroidJavaObject>("valueOf", enumName);
         }
 
-        internal static AndroidJavaObject ToJavaMap<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
+        internal static AndroidJavaObject ToJavaMap<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, bool includeNull)
         {
             AndroidJavaObject javaMap = new AndroidJavaObject("java.util.HashMap");
 
             foreach (KeyValuePair<TKey, TValue> pair in dictionary)
             {
-                using (AndroidJavaObject javaKey = pair.Key.ToJavaObject())
+                if (includeNull || pair.Value != null)
                 {
-                    using (AndroidJavaObject javaValue = pair.Value.ToJavaObject())
+                    using (AndroidJavaObject javaKey = pair.Key.ToJavaObject())
                     {
-                        javaMap.Call<AndroidJavaObject>("put", javaKey, javaValue);
+                        using (AndroidJavaObject javaValue = pair.Value.ToJavaObject())
+                        {
+                            javaMap.Call<AndroidJavaObject>("put", javaKey, javaValue);
+                        }
                     }
                 }
             }

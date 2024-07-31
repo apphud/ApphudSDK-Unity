@@ -1,7 +1,7 @@
 import Foundation
 import ApphudSDK
 
-@objc final public class ApphudUnityWrapper: NSObject {
+@objc final public class ApphudUnityAPIWrapper: NSObject {
     @MainActor
     @objc public static func start(apiKey: String, userID: String?, observerMode: Bool, callback: @escaping (String) -> Void) {
         Apphud.start(apiKey: apiKey, userID: userID, observerMode: observerMode) { user in
@@ -133,27 +133,37 @@ import ApphudSDK
     }
     
     @MainActor
-    @objc public static func addAttribution(provider: String, dataJson: String, identifer: String?) -> Void {
-        if let attributionProviderEnum = ApphudAttributionProvider.fromString(provider) {
-            if let data = dataJson.data(using: .utf8) {
-                do {
-                    let object = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    if let dictionary = object {
-                        Apphud.addAttribution(data: dictionary, from: attributionProviderEnum, identifer: identifer, callback: { status in
-                            print("AddAttribution status: \(status)")
-                        })
-                    }
-                } catch {
-                    print("Error during JSON deserialization: \(error.localizedDescription)")
-                }
+    @objc public static func addAttribution(provider: String, dataJson: String?, identifer: String?, callback: @escaping (Bool) -> Void) -> Void {
+        guard let attributionProviderEnum = ApphudAttributionProvider.fromString(provider) else {
+            print("Invalid provider string")
+            return
+        }
+        
+        var attributionData: [String: Any]?
+        
+        if let dataJson = dataJson, let data = dataJson.data(using: .utf8) {
+            do {
+                let object = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                attributionData = object
+            } catch {
+                print("Error during JSON deserialization: \(error.localizedDescription)")
             }
         }
+        
+        Apphud.addAttribution(data: attributionData, from: attributionProviderEnum, identifer: identifer, callback: callback)
+    }
+
+    @MainActor
+    @objc public static func loadFallbackPaywalls(callback: @escaping (String, String?) -> Void) -> Void {
+        Apphud.loadFallbackPaywalls(callback: { paywalls, error in
+            callback(paywalls.toJson(), error?.localizedDescription)
+        })
     }
 
     @MainActor
     @objc public static func setHeaders() -> Void {
         ApphudHttpClient.shared.sdkType = "unity"
-        ApphudHttpClient.shared.sdkVersion = "0.9.0"
+        ApphudHttpClient.shared.sdkVersion = "1.1.0"
     }
     
     private static func findPaywall(identifier:String, placementIdentifier: String?) async -> ApphudPaywall? {
