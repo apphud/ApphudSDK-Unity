@@ -4,7 +4,7 @@ using Apphud.Unity.Common;
 using Apphud.Unity.Domain;
 
 #if UNITY_EDITOR
-using Apphud.Unity.Simulator;
+using Apphud.Unity.Editor;
 #elif UNITY_ANDROID
 using Apphud.Unity.Android.SDK;
 #elif UNITY_IOS
@@ -16,7 +16,7 @@ namespace Apphud.Unity.SDK
     public static class ApphudSDK
     {
 #if UNITY_EDITOR
-        private static readonly IApphudSDK _sdk = new ApphudSimulatorSDK();
+        private static readonly IApphudSDK _sdk = new ApphudEditorSDK();
 #elif UNITY_ANDROID
         private static readonly IApphudSDK _sdk = new ApphudAndroidSDK();
 #elif UNITY_IOS
@@ -38,6 +38,12 @@ namespace Apphud.Unity.SDK
         /// Initializes the Apphud SDK. This method should be called during the app launch.
         /// </summary>
         /// <param name="apiKey">Your API key. This is a required parameter.</param>
+        /// <param name="observerMode">
+        /// Optional. Sets SDK to Observer (Analytics) mode.
+        /// If you purchase products by your own code, then pass `true`. 
+        /// If you purchase products using `Apphud.purchase(product)` method, then pass `false`.
+        /// Default value is `false`.
+        /// </param>
         /// <param name="callback">(Optional) A callback function that is invoked with the `ApphudUser` object after the SDK initialization is complete. 
         /// __Note__: Do not store `ApphudUser`instance in your own code, since it may change at runtime.
         /// </param>
@@ -48,6 +54,12 @@ namespace Apphud.Unity.SDK
         /// </summary>
         /// <param name="apiKey">Your API key. This is a required parameter.</param>
         /// <param name="userId">(Optional) A unique user identifier. If null is passed, a UUID will be generated and used as the user identifier.</param>
+        /// <param name="observerMode">
+        /// Optional. Sets SDK to Observer (Analytics) mode.
+        /// If you purchase products by your own code, then pass `true`. 
+        /// If you purchase products using `Apphud.purchase(product)` method, then pass `false`.
+        /// Default value is `false`.
+        /// </param>
         /// <param name="callback">(Optional) A callback function that is invoked with the `ApphudUser` object after the SDK initialization is complete. 
         /// __Note__: Do not store `ApphudUser`instance in your own code, since it may change at runtime.
         /// </param>
@@ -79,10 +91,11 @@ namespace Apphud.Unity.SDK
         /// an error will be returned along with the raw placements array.
         /// This allows for handling situations where partial data is available.
         /// </summary>
-        /// <param name="callback">The callback function that is invoked with the list of `ApphudPlacement` objects.
-        /// <param name="maxAttempts">Number of request attempts before throwing an error. Must be between 1 and 10. Default value is 3.
+        /// <param name="callback">
+        /// The callback function that is invoked with the list of `ApphudPlacement` objects.
         /// Second parameter in callback represents optional error, which may be on Google (BillingClient issue) or Appstore (StoreKit Error) or Apphud side.
         /// </param>
+        /// <param name="maxAttempts">Number of request attempts before throwing an error. Must be between 1 and 10. Default value is 3.</param>
         public static void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts = 3) => _sdk.FetchPlacements(callback, maxAttempts);
 
         /// <summary>
@@ -99,10 +112,11 @@ namespace Apphud.Unity.SDK
         /// an error will be returned along with the raw paywalls array.
         /// This allows for handling situations where partial data is available.    
         /// </summary>
-        /// <param name="callback">The callback function that is invoked with the list of `ApphudPaywall` objects.
-        /// <param name="maxAttempts">Number of request attempts before throwing an error. Must be between 1 and 10. Default value is 3.
+        /// <param name="callback">
+        /// The callback function that is invoked with the list of `ApphudPaywall` objects.
         /// Second parameter in callback represents optional error, which may be on Google (BillingClient issue) or Appstore (StoreKit Error) or Apphud side.
         /// </param>
+        /// <param name="maxAttempts">Number of request attempts before throwing an error. Must be between 1 and 10. Default value is 3.</param>
         public static void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts = 3) => _sdk.PaywallsDidLoadCallback(callback, maxAttempts);
 
         /// <summary>
@@ -230,8 +244,83 @@ namespace Apphud.Unity.SDK
         /// Be sure `optOutOfTracking()` is not called before this, otherwise identifiers will not be collected.
         /// </summary>
         public static void CollectDeviceIdentifiers() => _sdk.CollectDeviceIdentifiers();
+
+        /// <summary>
+        /// Returns `true` if fallback mode is on.
+        /// That means paywalls are loaded from the fallback json file.
+        /// </summary>
+        public static bool IsFallbackMode() => _sdk.IsFallbackMode();
+
+        /// <summary>
+        /// Tracks a purchase made through Google Play. This method should be used only in Observer Mode,
+        /// specifically when utilizing Apphud Paywalls and Placements, and when you need to associate the
+        /// purchase with specific paywall and placement identifiers.
+        /// 
+        /// In all other cases, purchases will be automatically intercepted and sent to Apphud.
+        /// 
+        /// Note: The `offerIdToken` is mandatory for subscriptions. The `paywallIdentifier` and `placementIdentifier`
+        /// are optional but recommended for A/B test analysis in Observer Mode.
+        /// </summary>
+        /// <param name="productID">The Google Play product ID of the item to purchase.</param>
+        /// <param name="offerIdToken">The identifier of the subscription's offer token. This parameter is required for subscriptions.</param>
+        /// <param name="paywallIdentifier">(Optional) The identifier of the paywall.</param>
+        /// <param name="placementIdentifier">(Optional) The identifier of the placement.</param>
+        public static void TrackPurchase(string productID, string offerIdToken = null, string paywallIdentifier = null, string placementIdentifier = null) => _sdk.TrackPurchase(productID, offerIdToken, paywallIdentifier, placementIdentifier);
+
+        /// <summary>
+        ///  Must be called before SDK initialization.
+        ///  Will make SDK to disregard cache and force refresh paywalls and placements.
+        ///  Call it only if keeping paywalls and placements up to date is critical for your app business.
+        /// </summary>
+        public static void InvalidatePaywallsCache() => _sdk.InvalidatePaywallsCache();
 #elif UNITY_IOS
+        /// <summary>
+        /// Submits attribution data to Apphud from Apple Search Ads.
+        /// For more details, visit https://docs.apphud.com/docs/apple-search-ads
+        /// </summary>
+        /// <param name="callback">Optional. A closure that returns `true` if the data was successfully sent to Apphud.</param>
+        public static void TrackAppleSearchAds() => _sdk.TrackAppleSearchAds();
+
+        /// <summary>
+        /// Notifies Apphud when a purchase process is initiated from a paywall in `Observer Mode`, enabling the use of A/B experiments.
+        /// This method should be called right before executing your own purchase method, and it's specifically required only when the SDK is in Observer Mode.
+        /// </summary>
+        /// <param name="paywallIdentifier">Required. The Paywall ID from Apphud Product Hub > Paywalls.</param>
+        /// <param name="placementIdentifier"> Optional. The Placement ID from Apphud Product Hub > Placements if using placements; otherwise, pass `nil`.</param>
+        public static void WillPurchaseProductFrom(string paywallIdentifier, string placementIdentifier) => _sdk.WillPurchaseProductFrom(paywallIdentifier, placementIdentifier);
+
+        /// <summary>
+        /// Submits Device Identifiers (IDFA and IDFV) to Apphud. These identifiers may be required for marketing and attribution platforms such as AppsFlyer, Facebook, Singular, etc.
+        /// Best practice is to call this method right after SDK's `start(...)` method and once again after getting IDFA.
+        /// </summary>
+        /// <param name="idfa">
+        /// IDFA. Identifier for Advertisers.
+        /// If you request IDFA using App Tracking Transparency framework, you can call this method again after granting access.
+        /// You can get it from: [UnityEngine.iOS.Device.advertisingIdentifier]
+        /// For more details, visit https://docs.unity.com/ads/en-us/manual/ATTCompliance
+        /// </param>
+        /// <param name="idfv">
+        /// IDFV. Identifier for Vendor.
+        /// Can be passed right after SDK's `start` method.
+        /// You can get it from: [UnityEngine.iOS.Device.vendorIdentifier]
+        /// For more details, visit https://docs.unity.com/ads/en-us/manual/ATTCompliance
+        /// </param>
         public static void SetDeviceIdentifiers(string idfa, string idfv) => _sdk.SetDeviceIdentifiers(idfa, idfv);
+
+        /// <summary>
+        /// Override default paywalls and placements cache timeout value. Default cache value is 9000 seconds (25 hours).
+        /// If expired, will make SDK to disregard cache and force refresh paywalls and placements.
+        /// Call it only if keeping paywalls and placements up to date is critical for your app business.
+        /// </summary>
+        /// <param name="value">New value in seconds. Must be between 0 and 172800 (48 hours).</param>
+        public static void SetPaywallsCacheTimeout(double value) => _sdk.SetPaywallsCacheTimeout(value);
+
+        /// <summary>
+        /// Submits the device's push token to Apphud as a String. This method provides an alternative way to submit the token if you have it in a string format.
+        /// </summary>
+        /// <param name="str">The push token as a String object.</param>
+        /// <param name="callback">An optional closure that returns `true` if the token was successfully sent to Apphud.</param>
+        public static void SubmitPushNotificationsTokenString(string str, Action<bool> callback) => _sdk.SubmitPushNotificationsTokenString(str, callback);
 #endif
 
         /// <summary>
@@ -281,6 +370,26 @@ namespace Apphud.Unity.SDK
         /// <param name="provider">Required. Attribution provider name.</param>
         /// <param name="data">Optional. Attribution dictionary.</param>
         /// <param name="identifier">Optional. Identifier that matches Apphud and the Attribution provider.</param>
+        /// <param name="callback">Optional. A closure that returns `true` if the data was successfully sent to Apphud.</param>
         public static void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null) => _sdk.AddAttribution(provider, data, identifier);
+#if APPHUD_FB
+        /// <summary>
+        /// Submits attribution data to Apphud from Facebook SDK.
+        /// For more details, visit https://docs.apphud.com/docs/facebook-conversions-api
+        /// </summary>
+        /// <param name="callback">Optional. A closure that returns `true` if the data was successfully sent to Apphud.</param>
+        public static void AddFacebookAttribution() => _sdk.AddFacebookAttribution();
+#endif
+        /// <summary>
+        /// Explicitly loads fallback paywalls from the json file, if it was added to the project resources.
+        /// By default, SDK automatically tries to load paywalls from the JSON file, if possible.
+        /// However, developer can also call this method directly for more control.
+        /// For more details, visit https://docs.apphud.com/docs/paywalls#set-up-fallback-mode
+        /// </summary>
+        /// <param name="callback">
+        /// The callback function that is invoked with the list of `ApphudPlacement` objects.
+        /// Second parameter in callback represents optional error, which may be on Google (BillingClient issue) or Appstore (StoreKit Error) or Apphud side.
+        /// </param>
+        public static void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback) => _sdk.LoadFallbackPaywalls(callback);
     }
 }

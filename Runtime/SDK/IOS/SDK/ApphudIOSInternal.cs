@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Apphud.Unity.Common.Utils;
+using Apphud.Unity.Domain;
 
 namespace Apphud.Unity.IOS.SDK
 {
@@ -87,10 +88,33 @@ namespace Apphud.Unity.IOS.SDK
         internal static extern void ApphudUnity_incrementUserProperty(string key, string byJson);
 
         [DllImport("__Internal")]
-        internal static extern void ApphudUnity_addAttribution(string provider, string dataJson, string identifer);
+        private static extern void ApphudUnity_addAttribution(string provider, string dataJson, string identifer, IntPtr callback);
+        internal static void AddAttribution(ApphudAttributionProvider provider, string dataJson, string identifer, Action<bool> callback) => ApphudUnity_addAttribution(provider.ToString(), dataJson, identifer, callback.ToIntPtr());
+
+        [DllImport("__Internal")]
+        private static extern void ApphudUnity_addFBAttribution(IntPtr callback);
+        internal static void AddFBAttribution(Action<bool> callback) => ApphudUnity_addFBAttribution(callback.ToIntPtr());
+
+        [DllImport("__Internal")]
+        private static extern void ApphudUnity_trackAppleSearchAds(IntPtr callback);
+        internal static void TrackAppleSearchAds(Action<bool> callback) => ApphudUnity_trackAppleSearchAds(callback.ToIntPtr());
+
+        [DllImport("__Internal")]
+        private static extern void ApphudUnity_loadFallbackPaywallsWithCallback(IntPtr callback);
+        internal static void LoadFallbackPaywallsWithCallback(Action<string, string> callback) => ApphudUnity_loadFallbackPaywallsWithCallback(callback.ToIntPtr());
+
+        [DllImport("__Internal")]
+        internal static extern void ApphudUnity_willPurchaseProductFrom(string paywallIdentifier, string placementIdentifier);
 
         [DllImport("__Internal")]
         internal static extern void ApphudUnity_setDeviceIdentifiers(string idfa, string idfv);
+
+        [DllImport("__Internal")]
+        internal static extern void ApphudUnity_setPaywallsCacheTimeout(double value);
+
+        [DllImport("__Internal")]
+        private static extern void ApphudUnity_submitPushNotificationsTokenString(string str, IntPtr callback);
+        internal static void SubmitPushNotificationsTokenString(string str, Action<bool> callback) => ApphudUnity_submitPushNotificationsTokenString(str, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         internal static extern void ApphudUnity_setHeaders();

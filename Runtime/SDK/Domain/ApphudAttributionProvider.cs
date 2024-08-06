@@ -4,7 +4,9 @@ namespace Apphud.Unity.Domain
     {
         appsFlyer,
         adjust,
+#if APPHUD_FB
         facebook,
+#endif
         firebase
     }
 }

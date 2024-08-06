@@ -1,14 +1,11 @@
 {
-    "name": "Apphud.Unity.Simulator",
+    "name": "Apphud.Unity.Editor",
     "rootNamespace": "",
     "references": [
-        "Apphud.Unity.Common",
-        "Apphud.Unity.Domain"
+        "GUID:7a660fea31b0a473c9362018768e6ad0",
+        "GUID:2c62968249dae42df8c6561be954ad50"
     ],
-    "includePlatforms": [
-        "Editor",
-        "iOS"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

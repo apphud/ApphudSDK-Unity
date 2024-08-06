@@ -1,9 +1,8 @@
 <dependencies>
-  <androidPackages>
-	  <androidPackage spec="com.apphud:ApphudSDK-Android:2.5.8"></androidPackage>
-  </androidPackages>
-  <iosPods>
-		<iosPod name="ApphudSDK" version="3.3.2">
-		</iosPod>
+	<androidPackages>
+		<androidPackage spec="com.apphud:ApphudSDK-Android:2.7.0"></androidPackage>
+	</androidPackages>
+	<iosPods>
+		<iosPod name="ApphudSDK" version="3.4.0"></iosPod>
 	</iosPods>
 </dependencies>
