@@ -92,10 +92,12 @@ namespace Apphud.Editor
             if (isIncluded)
             {
                 File.Move(path, $"{rootFolder}/{includeFolderPath}/{fileName}");
+                File.Move(path + ".meta", $"{rootFolder}/{includeFolderPath}/{fileName}" + ".meta");
             }
             else
             {
                 File.Move(path, $"{rootFolder}/{excludeFolderPath}/{fileName}");
+                File.Move(path + ".meta", $"{rootFolder}/{excludeFolderPath}/{fileName}" + ".meta");
             }
         }
 
