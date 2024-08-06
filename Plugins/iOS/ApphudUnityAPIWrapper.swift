@@ -63,13 +63,6 @@ import ApphudSDK
     }
     
     @MainActor
-    @objc public static func willPurchaseProductFrom(identifier:String, placementIdentifier: String?) -> Void {
-        Task{@MainActor in
-            Apphud.willPurchaseProductFrom(paywallIdentifier: identifier, placementIdentifier: placementIdentifier)
-        }
-    }
-    
-    @MainActor
     @objc public static func purchase(productId: String, placementIdentifier: String?, paywallIdentifier: String?, callback: @escaping (String) -> Void) {
         
         Task {@MainActor in

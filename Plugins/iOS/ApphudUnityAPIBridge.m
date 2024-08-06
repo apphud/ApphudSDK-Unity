@@ -162,18 +162,6 @@ void ApphudUnity_paywallClosed(const char *paywallIdentifier, const char *placem
 extern "C" {
 #endif
 
-void ApphudUnity_willPurchaseProductFrom(const char *placementIdentifier, const char *paywallIdentifier) {
-    [ApphudUnityWrapper willPurchaseProductFromIdentifier:cstringToString(paywallIdentifier) placementIdentifier:cstringToString(placementIdentifier)];
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void ApphudUnity_purchase(const char *productId,const char *placementIdentifier,const char *paywallIdentifier, UnityAction callback) {
     [ApphudUnityAPIWrapper purchaseWithProductId:cstringToString(productId) placementIdentifier:cstringToString(placementIdentifier) paywallIdentifier:cstringToString(paywallIdentifier) callback:^(NSString * _Nonnull purchaseResult) {
         SendCallbackToUnity(callback, purchaseResult);

@@ -80,11 +80,6 @@ namespace Apphud.Unity.IOS.SDK
             ApphudIOSInternal.ApphudUnity_paywallClosed(paywall.Identifier, paywall.PlacementIdentifier);
         }
 
-        public void WillPurchaseProductFrom(string placementIdentifier, string paywallIdentifier)
-        {
-            ApphudIOSInternal.ApphudUnity_willPurchaseProductFrom(placementIdentifier, placementIdentifier);
-        }
-
         public void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null)
         {
             ApphudIOSInternal.Purchase(
