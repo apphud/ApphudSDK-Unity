@@ -265,12 +265,6 @@ namespace Apphud.Unity.SDK
         /// <param name="placementIdentifier">(Optional) The identifier of the placement.</param>
         public static void TrackPurchase(string productID, string offerIdToken = null, string paywallIdentifier = null, string placementIdentifier = null) => _sdk.TrackPurchase(productID, offerIdToken, paywallIdentifier, placementIdentifier);
 
-        /// <summary>
-        ///  Must be called before SDK initialization.
-        ///  Will make SDK to disregard cache and force refresh paywalls and placements.
-        ///  Call it only if keeping paywalls and placements up to date is critical for your app business.
-        /// </summary>
-        public static void InvalidatePaywallsCache() => _sdk.InvalidatePaywallsCache();
 #elif UNITY_IOS
         /// <summary>
         /// Submits attribution data to Apphud from Apple Search Ads.
@@ -304,14 +298,6 @@ namespace Apphud.Unity.SDK
         /// For more details, visit https://docs.unity.com/ads/en-us/manual/ATTCompliance
         /// </param>
         public static void SetDeviceIdentifiers(string idfa, string idfv) => _sdk.SetDeviceIdentifiers(idfa, idfv);
-
-        /// <summary>
-        /// Override default paywalls and placements cache timeout value. Default cache value is 9000 seconds (25 hours).
-        /// If expired, will make SDK to disregard cache and force refresh paywalls and placements.
-        /// Call it only if keeping paywalls and placements up to date is critical for your app business.
-        /// </summary>
-        /// <param name="value">New value in seconds. Must be between 0 and 172800 (48 hours).</param>
-        public static void SetPaywallsCacheTimeout(double value) => _sdk.SetPaywallsCacheTimeout(value);
 
         /// <summary>
         /// Submits the device's push token to Apphud as a String. This method provides an alternative way to submit the token if you have it in a string format.
@@ -375,8 +361,8 @@ namespace Apphud.Unity.SDK
         /// Submits attribution data to Apphud from Facebook SDK.
         /// For more details, visit https://docs.apphud.com/docs/facebook-conversions-api
         /// </summary>
-        /// <param name="callback">Optional. A closure that returns `true` if the data was successfully sent to Apphud.</param>
-        public static void AddFacebookAttribution() => _sdk.AddFacebookAttribution();
+        /// <param name="callback">Optional. A callback that returns error message if the data was not successfully sent to Apphud.</param>
+        public static void AddFacebookAttribution(Action<string> callback) => _sdk.AddFacebookAttribution(callback);
 #endif
         /// <summary>
         /// Explicitly loads fallback paywalls from the json file, if it was added to the project resources.
@@ -389,5 +375,12 @@ namespace Apphud.Unity.SDK
         /// Second parameter in callback represents optional error, which may be on Google (BillingClient issue) or Appstore (StoreKit Error) or Apphud side.
         /// </param>
         public static void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback) => _sdk.LoadFallbackPaywalls(callback);
+
+        /// <summary>
+        ///  Must be called before SDK initialization.
+        ///  Will make SDK to disregard cache and force refresh paywalls and placements.
+        ///  Call it only if keeping paywalls and placements up to date is critical for your app business.
+        /// </summary>
+        public static void InvalidatePaywallsCache() => _sdk.InvalidatePaywallsCache();
     }
 }

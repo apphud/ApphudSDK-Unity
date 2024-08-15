@@ -153,9 +153,9 @@ namespace Apphud.Unity.IOS.SDK
         }
 
 #if APPHUD_FB
-        public void AddFacebookAttribution()
+        public void AddFacebookAttribution(Action<string> onError)
         {
-            ApphudIOSInternal.AddFBAttribution(status => {});
+            ApphudIOSInternal.AddFBAttribution((status) => { });
         }
 #endif
 
@@ -172,14 +172,14 @@ namespace Apphud.Unity.IOS.SDK
             );
         }
 
+        public void InvalidatePaywallsCache()
+        {
+            ApphudIOSInternal.ApphudUnity_setPaywallsCacheTimeout(0);
+        }
+
         public void SetDeviceIdentifiers(string idfa, string idfv)
         {
             ApphudIOSInternal.ApphudUnity_setDeviceIdentifiers(idfa, idfv);
-        }
-
-        public void SetPaywallsCacheTimeout(double value)
-        {
-            ApphudIOSInternal.ApphudUnity_setPaywallsCacheTimeout(value);
         }
 
         public void SubmitPushNotificationsTokenString(string str, Action<bool> callback)

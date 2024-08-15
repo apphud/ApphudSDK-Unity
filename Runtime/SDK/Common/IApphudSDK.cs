@@ -33,21 +33,20 @@ namespace Apphud.Unity.Common
         void IncrementUserProperty(ApphudUserPropertyKey key, object by);
         void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null);
 #if APPHUD_FB
-        void AddFacebookAttribution();
+        void AddFacebookAttribution(Action<string> onError = null);
 #endif
         void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback);
+        void InvalidatePaywallsCache();
 
 #if UNITY_ANDROID
         bool IsFallbackMode();
         void RefreshUserData();
         void CollectDeviceIdentifiers();
-        void InvalidatePaywallsCache();
         void TrackPurchase(string productID, string offerIdToken, string paywallIdentifier, string placementIdentifier);
 #elif UNITY_IOS
         void TrackAppleSearchAds();
         void WillPurchaseProductFrom(string paywallIdentifier, string placementIdentifier);
         void SetDeviceIdentifiers(string idfa, string idfv);
-        void SetPaywallsCacheTimeout(double value);
         void SubmitPushNotificationsTokenString(string str, Action<bool> callback);
 #endif
     }

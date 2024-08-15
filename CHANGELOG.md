@@ -5,14 +5,13 @@
 - New methods
   - LoadFallbackPaywalls
   - AddFacebookAttribution
-- New Android methods
   - InvalidatePaywallsCache
+- New Android methods
   - IsFallbackMode
   - TrackPurchase
 - New iOS methods
   - TrackAppleSearchAds
   - WillPurchaseProductFrom
-  - SetPaywallsCacheTimeout
   - SubmitPushNotificationsTokenString
 
 ## [1.0.0] - 2024-05-16

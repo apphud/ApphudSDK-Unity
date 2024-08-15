@@ -6,9 +6,11 @@ namespace Apphud.Unity.Editor
 {
     public sealed class ApphudEditorUtils : IApphudUtils
     {
-        internal static void LogNotSupportedWarning()
+        internal static string LogNotSupportedWarning()
         {
-            Debug.LogWarning("Apphud SDK is not supported in editor, please use it with android/ios build");
+            string warning = "Apphud SDK is not supported in editor, please use it with android/ios build";
+            Debug.LogWarning(warning);
+            return warning;
         }
 
         public void EnableAllLogs() => LogNotSupportedWarning();

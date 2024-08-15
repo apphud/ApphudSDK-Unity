@@ -102,9 +102,10 @@ namespace Apphud.Unity.Editor
         }
 
 #if APPHUD_FB
-        public void AddFacebookAttribution()
+        public void AddFacebookAttribution(Action<string> onError = null)
         {
-            ApphudEditorUtils.LogNotSupportedWarning();
+            string warning = ApphudEditorUtils.LogNotSupportedWarning();
+            onError?.Invoke(warning);
         }
 #endif
 
@@ -130,11 +131,6 @@ namespace Apphud.Unity.Editor
         }
 
         public void InvalidatePaywallsCache()
-        {
-            ApphudEditorUtils.LogNotSupportedWarning();
-        }
-
-        public void SetPaywallsCacheTimeout(double value)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }

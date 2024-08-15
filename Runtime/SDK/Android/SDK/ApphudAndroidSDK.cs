@@ -70,9 +70,9 @@ namespace Apphud.Unity.Android.SDK
         }
 
 #if APPHUD_FB
-        public void AddFacebookAttribution()
+        public void AddFacebookAttribution(Action<string> onError = null)
         {
-            ApphudFacebookAttribution.Add();
+            ApphudFacebookAttribution.Add(onError);
         }
 #endif
         public void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback)

@@ -58,13 +58,13 @@ namespace Apphud.Editor
         {
             if (namedBuildTarget == NamedBuildTarget.iOS)
             {
-                UpdateIncludingFileInBuild("ApphudUnityFacebookBridge", "Plugins/iOS", "Editor/DeactivatedPlugins", isEnabled);
-                UpdateIncludingFileInBuild("ApphudUnityFacebookWrapper", "Plugins/iOS", "Editor/DeactivatedPlugins", isEnabled);
-                UpdateIncludingFileInBuild("ApphudFacebookIOSDependencies", "Editor", "DeactivatedDependencies", isEnabled);
+                UpdateIncludingFileInBuild("ApphudUnityFacebookBridge", "Plugins/iOS", isEnabled);
+                UpdateIncludingFileInBuild("ApphudUnityFacebookWrapper", "Plugins/iOS", isEnabled);
+                UpdateIncludingFileInBuild("ApphudFacebookIOSDependencies", "Editor", isEnabled);
             }
             else
             {
-                UpdateIncludingFileInBuild("ApphudFacebookAndroidDependencies", "Editor", "DeactivatedDependencies", isEnabled);
+                UpdateIncludingFileInBuild("ApphudFacebookAndroidDependencies", "Editor", isEnabled);
             }
 
             if (isEnabled)
@@ -79,23 +79,30 @@ namespace Apphud.Editor
             AssetDatabase.Refresh();
         }
 
-        private static void UpdateIncludingFileInBuild(string name, string includeFolderPath, string excludeFolderPath, bool isIncluded)
+        private static void UpdateIncludingFileInBuild(string name, string includeFolderPath, bool isIncluded)
         {
-            string dependenciesGUID = AssetDatabase.FindAssets("ApphudDependencies")[0];
-            string editorFolder = Path.GetDirectoryName(AssetDatabase.GUIDToAssetPath(dependenciesGUID));
-            string rootFolder = Directory.GetParent(editorFolder).FullName;
+            string rootFodler = "Assets/Apphud";
 
             string asset = AssetDatabase.FindAssets(name)[0];
             string path = AssetDatabase.GUIDToAssetPath(asset);
             string fileName = Path.GetFileName(path);
 
+            string targetFolder = $"{rootFodler}/{includeFolderPath}";
+
+            if (!Directory.Exists(targetFolder))
+            {
+                Directory.CreateDirectory(targetFolder);
+            }
+
+            string targetPath = $"{targetFolder}/{fileName}";
+
             if (isIncluded)
             {
-                File.Move(path, $"{rootFolder}/{includeFolderPath}/{fileName}");
+                File.Copy(path, targetPath);
             }
             else
             {
-                File.Move(path, $"{rootFolder}/{excludeFolderPath}/{fileName}");
+                File.Delete(targetPath);
             }
         }
 
