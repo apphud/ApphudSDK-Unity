@@ -1,0 +1,5 @@
+<dependencies>
+	<iosPods>
+		<iosPod name="FBSDKCoreKit" version="17.0.2"></iosPod>
+	</iosPods>
+</dependencies>
