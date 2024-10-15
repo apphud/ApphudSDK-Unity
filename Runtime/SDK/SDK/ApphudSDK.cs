@@ -66,6 +66,19 @@ namespace Apphud.Unity.SDK
         public static void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode = false) => _sdk.Start(apiKey, userId, callback, observerMode);
 
         /// <summary>
+        /// Disables automatic paywall and placement requests during the SDK's initial setup.
+        /// Developers must explicitly call `FetchPlacements` method at a later point in the app's lifecycle to fetch placements with inner paywalls.
+        /// </summary>
+        public static void DeferPlacements() => _sdk.DeferPlacements();
+
+        /// <summary>
+        /// This method sends all user properties immediately to Apphud.
+        /// Should be used for audience segmentation in placements based on user properties.
+        /// </summary>
+        public static void ForceFlushUserProperties(Action<bool> completion) => _sdk.ForceFlushUserProperties(completion);
+
+
+        /// <summary>
         /// Use this method if you have a custom login system with your own backend logic.
         /// It effectively logs out the current user in the context of the Apphud SDK.
         /// </summary>
@@ -233,7 +246,7 @@ namespace Apphud.Unity.SDK
         /// 
         /// You can call this method, when the app reactivates from the background, if needed.
         /// </summary>
-        public static void RefreshUserData() => _sdk.RefreshUserData();
+        public static void RefreshUserData(Action<ApphudUser> callback) => _sdk.RefreshUserData(callback);
 
         /// <summary>
         /// Collects device identifiers required for some third-party integrations (e.g., AppsFlyer, Adjust, Singular).

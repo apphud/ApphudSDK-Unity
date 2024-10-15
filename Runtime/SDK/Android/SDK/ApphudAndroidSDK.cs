@@ -20,6 +20,9 @@ namespace Apphud.Unity.Android.SDK
         public void Start(string apiKey, Action<ApphudUser> callback, bool observerMode) => ApphudAndroidInternal.Start(apiKey, callback, observerMode);
         public void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode) => ApphudAndroidInternal.Start(apiKey, userId, callback, observerMode);
 
+        public void DeferPlacements() => ApphudAndroidInternal.DeferPlacements();
+        public void ForceFlushUserProperties(Action<bool> completion) => ApphudAndroidInternal.ForceFlushUserProperties(completion);
+
         public void LogOut() => ApphudAndroidInternal.LogOut();
         public void UpdateUserId(string userId) => ApphudAndroidInternal.UpdateUserId(userId);
 
@@ -50,7 +53,7 @@ namespace Apphud.Unity.Android.SDK
             ApphudAndroidInternal.GrantPromotional(daysCount, productId, permissionGroup, callback);
         }
 
-        public void RefreshUserData() => ApphudAndroidInternal.RefreshUserData();
+        public void RefreshUserData(Action<ApphudUser> callback) => ApphudAndroidInternal.RefreshUserData(callback);
 
         public bool HasPremiumAccess() => ApphudAndroidInternal.HasPremiumAccess();
         public bool HasActiveSubscription() => ApphudAndroidInternal.HasActiveSubscription();

@@ -54,6 +54,16 @@ namespace Apphud.Unity.Android.SDK
            );
         }
 
+        internal static void DeferPlacements()
+        {
+            Instance.Call("deferPlacements");
+        }
+
+        internal static void ForceFlushUserProperties(Action<bool> completion)
+        {
+            Instance.Call("forceFlushUserProperties", new KotlinGenericActionWrapper1<bool>(completion, _debugLogsEnabled));
+        }
+
         internal static void LogOut() => Instance.Call("logout");
         internal static void UpdateUserId(string userId) => Instance.Call("updateUserId", userId);
 
@@ -180,10 +190,16 @@ namespace Apphud.Unity.Android.SDK
 
         internal static void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback)
         {
-            Instance.Call("grantPromotional", daysCount, productId, permissionGroup, callback);
+            Instance.Call("grantPromotional", daysCount, productId, permissionGroup, new KotlinGenericActionWrapper1<bool>(callback, _debugLogsEnabled));
         }
 
-        internal static void RefreshUserData() => Instance.Call("refreshUserData");
+        internal static void RefreshUserData(Action<ApphudUser> callback)
+        {
+            Instance.Call(
+                "refreshUserData",
+                new KotlinActionWrapper1(p1 => callback(new AndroidApphudUser(p1)), _debugLogsEnabled)
+            );
+        }
 
         internal static bool HasPremiumAccess() => Instance.Call<bool>("hasPremiumAccess");
         internal static bool HasActiveSubscription() => Instance.Call<bool>("hasActiveSubscription");

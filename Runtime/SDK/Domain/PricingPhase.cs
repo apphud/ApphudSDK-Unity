@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 namespace Apphud.Unity.Domain
 {
     public abstract class PricingPhase
@@ -10,3 +11,4 @@ namespace Apphud.Unity.Domain
         public int BillingCycleCount { get; protected set; }
     }
 }
+#endif

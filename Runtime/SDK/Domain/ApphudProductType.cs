@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 namespace Apphud.Unity.Domain
 {
     public enum ApphudProductType
@@ -6,3 +7,4 @@ namespace Apphud.Unity.Domain
         INAPP
     }
 }
+#endif

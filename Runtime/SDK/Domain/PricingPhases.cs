@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 using System.Collections.Generic;
 
 namespace Apphud.Unity.Domain
@@ -7,3 +8,4 @@ namespace Apphud.Unity.Domain
         public List<PricingPhase> PricingPhaseList { get; protected set; }
     }
 }
+#endif

@@ -16,6 +16,7 @@ namespace Apphud.Unity.Android.Domain
             PurchasedAt = javaObject.Get<long>("purchasedAt");
             CanceledAt = javaObject.GetNullableLong("cancelledAt");
             IsConsumable = javaObject.Get<bool>("isConsumable");
+            PurchaseToken = javaObject.Get<string>("purchaseToken");
             IsActive = _javaObject.Call<bool>("isActive");
         }
     }

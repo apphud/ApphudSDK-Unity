@@ -5,11 +5,6 @@ namespace Apphud.Unity.Domain
     public abstract class ApphudPaywall
     {
         /// <summary>
-        /// Paywall name, from Apphud Dashboard.
-        /// </summary>
-        public string Name { get; protected set; }
-
-        /// <summary>
         /// Your custom paywall identifier from Apphud Dashboard.
         /// </summary>
         public string Identifier { get; protected set; }

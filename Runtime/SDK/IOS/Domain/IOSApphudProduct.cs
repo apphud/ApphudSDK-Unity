@@ -11,6 +11,7 @@ namespace Apphud.Unity.IOS.Domain
         public string productId;
         public string name;
         public string store;
+        public SKProduct skProduct;
     }
 
     internal sealed class IOSApphudProduct : ApphudProduct
@@ -22,6 +23,7 @@ namespace Apphud.Unity.IOS.Domain
             Store = json.store;
             PaywallIdentifier = paywallIdentifier;
             PlacementIdentifier = placementIdentifier;
+            SKProduct = json.skProduct;
         }
     }
 }

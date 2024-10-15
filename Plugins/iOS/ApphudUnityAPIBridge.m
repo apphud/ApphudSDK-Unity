@@ -60,6 +60,32 @@ void ApphudUnity_startWithApiKey(const char *apiKey, BOOL observerMode, UnityAct
 extern "C" {
 #endif
 
+void ApphudUnity_deferPlacements(void) {
+    [ApphudUnityAPIWrapper deferPlacements];
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void ApphudUnity_forceFlushUserProperties(UnityAction completion) {
+    [ApphudUnityAPIWrapper forceFlushUserPropertiesWithCompletion:^(BOOL value) {
+        SendCallbackBoolToUnity(completion, value);
+    }];
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void ApphudUnity_logOut(void) {
     [Apphud logoutWithCompletionHandler:^{}];
 }

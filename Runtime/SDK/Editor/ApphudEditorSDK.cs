@@ -30,6 +30,9 @@ namespace Apphud.Unity.Editor
         public void Start(string apiKey, Action<ApphudUser> callback, bool observerMode) => ApphudEditorUtils.LogNotSupportedWarning();
         public void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode) => ApphudEditorUtils.LogNotSupportedWarning();
 
+        public void DeferPlacements() => ApphudEditorUtils.LogNotSupportedWarning();
+        public void ForceFlushUserProperties(Action<bool> completion) => ApphudEditorUtils.LogNotSupportedWarning();
+
         public void LogOut() => ApphudEditorUtils.LogNotSupportedWarning();
         public void UpdateUserId(string userId) => ApphudEditorUtils.LogNotSupportedWarning();
 
@@ -68,7 +71,7 @@ namespace Apphud.Unity.Editor
             ApphudEditorUtils.LogNotSupportedWarning();
         }
 
-        public void RefreshUserData() => ApphudEditorUtils.LogNotSupportedWarning();
+        public void RefreshUserData(Action<ApphudUser> callback) => ApphudEditorUtils.LogNotSupportedWarning();
 
         public bool HasPremiumAccess()
         {

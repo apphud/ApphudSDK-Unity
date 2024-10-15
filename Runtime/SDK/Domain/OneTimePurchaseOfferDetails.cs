@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 namespace Apphud.Unity.Domain
 {
     public abstract class OneTimePurchaseOfferDetails
@@ -8,3 +9,4 @@ namespace Apphud.Unity.Domain
         public string OfferIdToken { get; protected set; }
     }
 }
+#endif
