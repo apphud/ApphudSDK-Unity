@@ -10,6 +10,8 @@ namespace Apphud.Unity.Common
         string DeviceId { get; }
         void Start(string apiKey, Action<ApphudUser> callback, bool observerMode);
         void Start(string apiKey, string userId, Action<ApphudUser> callback, bool observerMode);
+        void DeferPlacements();
+        void ForceFlushUserProperties(Action<bool> completion);
         void LogOut();
         void UpdateUserId(string userId);
 
@@ -40,7 +42,7 @@ namespace Apphud.Unity.Common
 
 #if UNITY_ANDROID
         bool IsFallbackMode();
-        void RefreshUserData();
+        void RefreshUserData(Action<ApphudUser> callback);
         void CollectDeviceIdentifiers();
         void TrackPurchase(string productID, string offerIdToken, string paywallIdentifier, string placementIdentifier);
 #elif UNITY_IOS

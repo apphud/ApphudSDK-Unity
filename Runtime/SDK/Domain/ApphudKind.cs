@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 namespace Apphud.Unity.Domain
 {
     public enum ApphudKind
@@ -7,3 +8,4 @@ namespace Apphud.Unity.Domain
         AUTORENEWABLE
     }
 }
+#endif

@@ -4,6 +4,38 @@ using Apphud.Unity.Common.Utils;
 
 namespace Apphud.Unity.Android
 {
+    internal sealed class KotlinGenericActionWrapper1<T> : AndroidJavaProxy
+    {
+        private readonly Action<T> _onInvoke;
+        private readonly bool _debugMode;
+
+        internal KotlinGenericActionWrapper1(Action<T> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function1")
+        {
+            _onInvoke = onInvoke;
+        }
+
+        internal object invoke(T arg)
+        {
+            if (_debugMode)
+            {
+                try
+                {
+                    _onInvoke.InvokeInUIThread(arg);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[Apphud](KotlinGenericActionWrapper1) {ex.Message}");
+                }
+            }
+            else
+            {
+                _onInvoke.InvokeInUIThread(arg);
+            }
+
+            return null;
+        }
+    }
+
     internal sealed class KotlinActionWrapper1 : AndroidJavaProxy
     {
         private readonly Action<AndroidJavaObject> _onInvoke;

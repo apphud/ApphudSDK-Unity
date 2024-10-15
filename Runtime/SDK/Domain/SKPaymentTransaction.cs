@@ -1,3 +1,4 @@
+#if UNITY_IOS
 namespace Apphud.Unity.Domain
 {
     public enum SKPaymentTransactionState
@@ -45,3 +46,4 @@ namespace Apphud.Unity.Domain
         public SKPaymentTransactionState State { get; protected set; }
     }
 }
+#endif

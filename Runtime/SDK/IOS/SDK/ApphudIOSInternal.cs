@@ -23,6 +23,13 @@ namespace Apphud.Unity.IOS.SDK
         internal static void Start(string apiKey, string userId, Action<string> callback, bool observerMode) => ApphudUnity_startWithApiKeyAndUserId(apiKey, userId, observerMode, callback.ToIntPtr());
 
         [DllImport("__Internal")]
+        internal static extern void ApphudUnity_deferPlacements();
+
+        [DllImport("__Internal")]
+        private static extern void ApphudUnity_forceFlushUserProperties(IntPtr callback);
+        internal static void ForceFlushUserProperties(Action<bool> completion) => ApphudUnity_forceFlushUserProperties(completion.ToIntPtr());
+
+        [DllImport("__Internal")]
         internal static extern void ApphudUnity_logOut();
 
         [DllImport("__Internal")]

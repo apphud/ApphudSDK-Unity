@@ -14,7 +14,6 @@ namespace Apphud.Unity.Android.Domain
 
         internal AndroidApphudPaywall(AndroidJavaObject javaObject)
         {
-            Name = javaObject.Get<string>("name");
             Identifier = javaObject.Get<string>("identifier");
             Default = javaObject.Get<bool>("default");
             ExperimentName = javaObject.Get<string>("experimentName");

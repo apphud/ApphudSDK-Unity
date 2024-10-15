@@ -32,6 +32,16 @@ namespace Apphud.Unity.IOS.SDK
             ApphudIOSInternal.Start(apiKey, userId, json => callback(new IOSApphudUser(json)), observerMode);
         }
 
+        public void DeferPlacements()
+        {
+            ApphudIOSInternal.ApphudUnity_deferPlacements();
+        }
+
+        public void ForceFlushUserProperties(Action<bool> completion)
+        {
+            ApphudIOSInternal.ForceFlushUserProperties(completion);
+        }
+
         public void LogOut() => ApphudIOSInternal.ApphudUnity_logOut();
 
         public void UpdateUserId(string userId) => ApphudIOSInternal.ApphudUnity_updateUserId(userId);

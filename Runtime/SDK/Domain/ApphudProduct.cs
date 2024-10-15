@@ -1,4 +1,6 @@
+#if UNITY_ANDROID
 using System.Collections.Generic;
+#endif
 
 namespace Apphud.Unity.Domain
 {
@@ -52,6 +54,12 @@ namespace Apphud.Unity.Domain
         public OneTimePurchaseOfferDetails OneTimePurchaseOfferDetails { get; protected set; }
 
         public List<SubscriptionOfferDetails> SubscriptionOfferDetails { get; protected set; }
+#elif UNITY_IOS
+        /// <summary>
+        /// When paywalls are successfully loaded, skProduct model will always be present if App Store returned model for this product id.
+        /// May be null if product identifier is invalid, or product is not available in App Store Connect.
+        /// </summary>
+        public SKProduct SKProduct { get; protected set; }
 #endif
     }
 }

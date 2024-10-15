@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 namespace Apphud.Unity.Domain
 {
     public enum RecurrenceMode
@@ -8,3 +9,4 @@ namespace Apphud.Unity.Domain
         UNDEFINED = 0
     }
 }
+#endif

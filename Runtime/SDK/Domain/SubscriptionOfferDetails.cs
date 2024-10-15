@@ -1,3 +1,4 @@
+#if UNITY_ANDROID
 using System.Collections.Generic;
 
 namespace Apphud.Unity.Domain
@@ -11,3 +12,4 @@ namespace Apphud.Unity.Domain
         public List<string> OfferTags { get; protected set; }
     }
 }
+#endif

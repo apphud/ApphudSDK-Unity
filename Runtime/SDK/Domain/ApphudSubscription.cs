@@ -54,6 +54,7 @@ namespace Apphud.Unity.Domain
 #if UNITY_ANDROID
         public ApphudKind? Kind { get; protected set; }
         public string GroupId { get; protected set; }
+        public string PurchaseToken { get; protected set; }
 #endif
 
         /// <summary>
