@@ -71,25 +71,9 @@ namespace Apphud.Unity.Domain
         [Preserve]
         public SKProductDiscount IntroductoryPrice { get; private set; }
 
-        [JsonProperty("isDownloadable")]
-        [Preserve]
-        public bool IsDownloadable { get; private set; }
-
         [JsonProperty("isFamilyShareable")]
         [Preserve]
         public bool IsFamilyShareable { get; private set; }
-
-        [JsonProperty("downloadContentLengths")]
-        [Preserve]
-        public int[] DownloadContentLengths { get; private set; }
-
-        [JsonProperty("contentVersion")]
-        [Preserve]
-        public string ContentVersion { get; private set; }
-
-        [JsonProperty("downloadContentVersion")]
-        [Preserve]
-        public string DownloadContentVersion { get; private set; }
 
         [JsonProperty("subscriptionGroupIdentifier")]
         [Preserve]
