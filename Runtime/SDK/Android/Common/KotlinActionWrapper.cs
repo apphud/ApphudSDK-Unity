@@ -4,14 +4,36 @@ using Apphud.Unity.Common.Utils;
 
 namespace Apphud.Unity.Android
 {
-    internal sealed class KotlinGenericActionWrapper1<T> : AndroidJavaProxy
+    internal sealed class KotlinActionWrapper1 : KotlinGenericActionWrapper<AndroidJavaObject>
+    {
+        internal KotlinActionWrapper1(Action<AndroidJavaObject> onInvoke, bool debugMode) : base(onInvoke, debugMode)
+        {
+        }
+    }
+
+    internal sealed class KotlinActionWrapper2 : KotlinGenericActionWrapper<AndroidJavaObject, AndroidJavaObject>
+    {
+        internal KotlinActionWrapper2(Action<AndroidJavaObject, AndroidJavaObject> onInvoke, bool debugMode) : base(onInvoke, debugMode)
+        {
+        }
+    }
+
+    internal sealed class KotlinActionWrapper3 : KotlinGenericActionWrapper<AndroidJavaObject, AndroidJavaObject, AndroidJavaObject>
+    {
+        internal KotlinActionWrapper3(Action<AndroidJavaObject, AndroidJavaObject, AndroidJavaObject> onInvoke, bool debugMode) : base(onInvoke, debugMode)
+        {
+        }
+    }
+
+    internal class KotlinGenericActionWrapper<T> : AndroidJavaProxy
     {
         private readonly Action<T> _onInvoke;
         private readonly bool _debugMode;
 
-        internal KotlinGenericActionWrapper1(Action<T> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function1")
+        internal KotlinGenericActionWrapper(Action<T> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function1")
         {
             _onInvoke = onInvoke;
+            _debugMode = debugMode;
         }
 
         internal object invoke(T arg)
@@ -36,51 +58,18 @@ namespace Apphud.Unity.Android
         }
     }
 
-    internal sealed class KotlinActionWrapper1 : AndroidJavaProxy
+    internal class KotlinGenericActionWrapper<T1, T2> : AndroidJavaProxy
     {
-        private readonly Action<AndroidJavaObject> _onInvoke;
+        private readonly Action<T1, T2> _onInvoke;
         private readonly bool _debugMode;
 
-        internal KotlinActionWrapper1(Action<AndroidJavaObject> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function1")
+        internal KotlinGenericActionWrapper(Action<T1, T2> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function2")
         {
             _onInvoke = onInvoke;
             _debugMode = debugMode;
         }
 
-        internal AndroidJavaObject invoke(AndroidJavaObject p1)
-        {
-            if (_debugMode)
-            {
-                try
-                {
-                    _onInvoke.InvokeInUIThread(p1);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"[Apphud](KotlinActionWrapper1) {ex.Message}");
-                }
-            }
-            else
-            {
-                _onInvoke.InvokeInUIThread(p1);
-            }
-
-            return null;
-        }
-    }
-
-    internal sealed class KotlinActionWrapper2 : AndroidJavaProxy
-    {
-        private readonly Action<AndroidJavaObject, AndroidJavaObject> _onInvoke;
-        private readonly bool _debugMode;
-
-        internal KotlinActionWrapper2(Action<AndroidJavaObject, AndroidJavaObject> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function2")
-        {
-            _onInvoke = onInvoke;
-            _debugMode = debugMode;
-        }
-
-        internal AndroidJavaObject invoke(AndroidJavaObject p1, AndroidJavaObject p2)
+        internal AndroidJavaObject invoke(T1 p1, T2 p2)
         {
             if (_debugMode)
             {
@@ -101,18 +90,18 @@ namespace Apphud.Unity.Android
         }
     }
 
-    internal sealed class KotlinActionWrapper3 : AndroidJavaProxy
+    internal class KotlinGenericActionWrapper<T1, T2, T3> : AndroidJavaProxy
     {
-        private readonly Action<AndroidJavaObject, AndroidJavaObject, AndroidJavaObject> _onInvoke;
+        private readonly Action<T1, T2, T3> _onInvoke;
         private readonly bool _debugMode;
 
-        internal KotlinActionWrapper3(Action<AndroidJavaObject, AndroidJavaObject, AndroidJavaObject> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function3")
+        internal KotlinGenericActionWrapper(Action<T1, T2, T3> onInvoke, bool debugMode) : base("kotlin.jvm.functions.Function3")
         {
             _onInvoke = onInvoke;
             _debugMode = debugMode;
         }
 
-        internal AndroidJavaObject invoke(AndroidJavaObject p1, AndroidJavaObject p2, AndroidJavaObject p3)
+        internal AndroidJavaObject invoke(T1 p1, T2 p2, T3 p3)
         {
             if (_debugMode)
             {

@@ -34,6 +34,7 @@ namespace Apphud.Unity.Common
         void SetUserProperty(ApphudUserPropertyKey key, object value, bool setOnce);
         void IncrementUserProperty(ApphudUserPropertyKey key, object by);
         void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null);
+        void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback);
 #if APPHUD_FB
         void AddFacebookAttribution(Action<string> onError = null);
 #endif

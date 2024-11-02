@@ -4,32 +4,14 @@ import StoreKit
 extension [ApphudSubscription] {
     func toJsonListOfMap() -> String {
         let list = self.map { $0.toMap() }
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: list)
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                return jsonString
-            }
-        } catch {
-            return "Error converting map to JSON: \(error.localizedDescription)"
-        }
-        
-        return "Error converting map to JSON"
+        return list.toJson()
     }
 }
 
 extension [ApphudNonRenewingPurchase] {
     func toJsonListOfMap() -> String {
         let list = self.map { $0.toMap() }
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: list)
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                return jsonString
-            }
-        } catch {
-            return "Error converting map to JSON: \(error.localizedDescription)"
-        }
-        
-        return "Error converting map to JSON"
+        return list.toJson()
     }
 }
 
@@ -37,7 +19,7 @@ extension ApphudPurchaseResult {
     func toMap() -> [String: Any?] {
         return ["subscription" : subscription?.toMap(),
                 "nonRenewingPurchase" : nonRenewingPurchase?.toMap(),
-                "error": error == nil ? nil : error?.localizedDescription,
+                "error": error == nil ? nil : error?.toMap(),
                 "transaction": transaction?.toMap()
         ]
     }

@@ -338,8 +338,22 @@ void ApphudUnity_addAttribution(const char *provider, const char *dataJson, cons
 extern "C" {
 #endif
 
+void ApphudUnity_attributeFromWeb(const char *dataJson, UnityAction callback) {
+    [ApphudUnityAPIWrapper attributeFromWebWithDataJson:cstringToString(dataJson) callback:^(BOOL status, NSString * _Nullable user) {
+        SendCallbackBoolAndStringToUnity(callback, status, user);
+    }];
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void ApphudUnity_loadFallbackPaywallsWithCallback(UnityAction callback) {
-    [ApphudUnityAPIWrapper loadFallbackPaywallsWithCallback: ^(NSString * _Nonnull paywalls, NSString * _Nullable error) {
+    [ApphudUnityAPIWrapper loadFallbackPaywallsWithCallback: ^(NSString * _Nullable paywalls, NSString * _Nullable error) {
         SendCallback2ToUnity(callback, paywalls, error);
     }];
 }

@@ -10,12 +10,16 @@ namespace Apphud.Unity.IOS.Common
         public static bool DebugLogsEnabled { get; set; }
 
         private delegate void CallbackBoolDelegate(IntPtr actionPtr, bool data);
+        private delegate void CallbackBoolAndStringDelegate(IntPtr actionPtr, bool data, string data2);
         private delegate void CallbackDelegate(IntPtr actionPtr, string data);
         private delegate void Callback2Delegate(IntPtr actionPtr, string data, string data2);
         private delegate void Callback3Delegate(IntPtr actionPtr, string data, string data2, string data3);
 
         [AOT.MonoPInvokeCallback(typeof(CallbackDelegate))]
         private static void OnCallbackBool(IntPtr actionPtr, bool data) => InvokeAction(actionPtr, new object[] { data });
+
+        [AOT.MonoPInvokeCallback(typeof(CallbackDelegate))]
+        private static void OnCallbackBoolAndString(IntPtr actionPtr, bool data, string data2) => InvokeAction(actionPtr, new object[] { data, data2 });
 
         [AOT.MonoPInvokeCallback(typeof(CallbackDelegate))]
         private static void OnCallback(IntPtr actionPtr, string data) => InvokeAction(actionPtr, new object[] { data });
@@ -76,12 +80,12 @@ namespace Apphud.Unity.IOS.Common
                 if (!m_IsInitialized)
                 {
                     m_IsInitialized = true;
-                    RegisterCallbackDelegate(OnCallbackBool, OnCallback, OnCallback2, OnCallback3);
+                    RegisterCallbackDelegate(OnCallbackBool, OnCallbackBoolAndString, OnCallback, OnCallback2, OnCallback3);
                 }
             }
         }
 
         [DllImport("__Internal", EntryPoint = "ApphudUnity_registerCallbackHandler")]
-        private static extern void RegisterCallbackDelegate(CallbackBoolDelegate callbackBoolDelegate, CallbackDelegate callbackDelegate, Callback2Delegate callback2Delegate, Callback3Delegate callback3Delegate);
+        private static extern void RegisterCallbackDelegate(CallbackBoolDelegate callbackBoolDelegate, CallbackBoolAndStringDelegate callbackBoolAndStringDelegate, CallbackDelegate callbackDelegate, Callback2Delegate callback2Delegate, Callback3Delegate callback3Delegate);
     }
 }

@@ -24,7 +24,7 @@ namespace Apphud.Unity.Android.SDK
         public void ForceFlushUserProperties(Action<bool> completion) => ApphudAndroidInternal.ForceFlushUserProperties(completion);
 
         public void LogOut() => ApphudAndroidInternal.LogOut();
-        public void UpdateUserId(string userId) => ApphudAndroidInternal.UpdateUserId(userId);
+        public void UpdateUserId(string userId) => ApphudAndroidInternal.UpdateUserId(userId, (user) => { });
 
         public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts) => ApphudAndroidInternal.FetchPlacements(callback, maxAttempts);
 
@@ -70,6 +70,11 @@ namespace Apphud.Unity.Android.SDK
         public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
         {
             ApphudAndroidInternal.AddAttribution(provider, data, identifier);
+        }
+
+        public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)
+        {
+            ApphudAndroidInternal.AttributeFromWeb(data, callback);
         }
 
 #if APPHUD_FB

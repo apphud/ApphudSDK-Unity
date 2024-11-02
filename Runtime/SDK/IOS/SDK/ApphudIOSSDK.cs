@@ -8,6 +8,7 @@ using Apphud.Unity.Domain;
 using Apphud.Unity.IOS.Common;
 using Apphud.Unity.IOS.Domain;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Apphud.Unity.IOS.SDK
 {
@@ -48,17 +49,17 @@ namespace Apphud.Unity.IOS.SDK
 
         public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts)
         {
-            ApphudIOSInternal.FetchPlacements(maxAttempts, (placementsJson, error) => callback(
+            ApphudIOSInternal.FetchPlacements(maxAttempts, (placementsJson, errorJson) => callback(
                 placementsJson.ToListFromJson<ApphudPlacement, IOSApphudPlacementJson>(json => new IOSApphudPlacement(json)),
-                error != null ? new IOSApphudError(error) : null)
+                errorJson != null ? new IOSApphudError(errorJson) : null)
             );
         }
 
         public void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts)
         {
-            ApphudIOSInternal.PaywallsDidLoadCallback(maxAttempts, (paywallsJson, error) => callback(
+            ApphudIOSInternal.PaywallsDidLoadCallback(maxAttempts, (paywallsJson, errorJson) => callback(
                 paywallsJson.ToListFromJson<ApphudPaywall, IOSApphudPaywallJson>(json => new IOSApphudPaywall(json, null)),
-                error != null ? new IOSApphudError(error) : null)
+                errorJson != null ? new IOSApphudError(errorJson) : null)
             );
         }
 
@@ -102,7 +103,7 @@ namespace Apphud.Unity.IOS.SDK
 
         public void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback)
         {
-            ApphudIOSInternal.RestorePurchases((subscriptionsJson, nonRenewingPurchasesJson, error) =>
+            ApphudIOSInternal.RestorePurchases((subscriptionsJson, nonRenewingPurchasesJson, errorJson) =>
             {
                 callback(
                     subscriptionsJson.ToListFromJson<ApphudSubscription, IOSApphudSubscriptionJson>(
@@ -111,7 +112,7 @@ namespace Apphud.Unity.IOS.SDK
                     nonRenewingPurchasesJson.ToListFromJson<ApphudNonRenewingPurchase, IOSApphudNonRenewingPurchaseJson>(
                         json => new IOSApphudNonRenewingPurchase(json)
                     ),
-                    error != null ? new IOSApphudError(error) : null
+                    errorJson != null ? new IOSApphudError(errorJson) : null
                 );
             });
         }
@@ -147,19 +148,15 @@ namespace Apphud.Unity.IOS.SDK
 
         public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifer = null)
         {
-            string jsonData = null;
+            ApphudIOSInternal.AddAttribution(provider, data?.ToIgnoreNullJson(), identifer, status => { });
+        }
 
-            if (data != null)
+        public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)
+        {
+            ApphudIOSInternal.AttributeFromWeb(data?.ToIgnoreNullJson(), (status, userJson) =>
             {
-                JsonSerializerSettings serializerSettings = new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                };
-
-                jsonData = JsonConvert.SerializeObject(data, Formatting.Indented, serializerSettings);
-            }
-
-            ApphudIOSInternal.AddAttribution(provider, jsonData, identifer, status => { });
+                callback(status, userJson != null ? new IOSApphudUser(userJson) : null);
+            });
         }
 
 #if APPHUD_FB
@@ -176,9 +173,9 @@ namespace Apphud.Unity.IOS.SDK
 
         public void LoadFallbackPaywalls(Action<List<ApphudPaywall>, ApphudError> callback)
         {
-            ApphudIOSInternal.LoadFallbackPaywallsWithCallback((paywallsJson, error) => callback(
-                paywallsJson.ToListFromJson<ApphudPaywall, IOSApphudPaywallJson>(json => new IOSApphudPaywall(json, null)),
-                error != null ? new IOSApphudError(error) : null)
+            ApphudIOSInternal.LoadFallbackPaywallsWithCallback((paywallsJson, errorJson) => callback(
+                paywallsJson != null ? paywallsJson.ToListFromJson<ApphudPaywall, IOSApphudPaywallJson>(json => new IOSApphudPaywall(json, null)) : new List<ApphudPaywall>(),
+                errorJson != null ? new IOSApphudError(errorJson) : null)
             );
         }
 

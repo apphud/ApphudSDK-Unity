@@ -96,6 +96,10 @@ namespace Apphud.Unity.IOS.SDK
         internal static void AddAttribution(ApphudAttributionProvider provider, string dataJson, string identifer, Action<bool> callback) => ApphudUnity_addAttribution(provider.ToString(), dataJson, identifer, callback.ToIntPtr());
 
         [DllImport("__Internal")]
+        private static extern void ApphudUnity_attributeFromWeb(string dataJson, IntPtr callback);
+        internal static void AttributeFromWeb(string dataJson, Action<bool, string> callback) => ApphudUnity_attributeFromWeb(dataJson, callback.ToIntPtr());
+
+        [DllImport("__Internal")]
         private static extern void ApphudUnity_addFBAttribution(IntPtr callback);
         internal static void AddFBAttribution(Action<bool> callback) => ApphudUnity_addFBAttribution(callback.ToIntPtr());
 

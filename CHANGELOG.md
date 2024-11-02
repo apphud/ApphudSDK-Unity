@@ -1,3 +1,9 @@
+## [1.3.0] - 2024-11-02
+
+- New methods
+  - AttributeFromWeb
+- Added ErrorCode value to ApphudError on iOS
+
 ## [1.2.0] - 2024-10-15
 
 - New methods

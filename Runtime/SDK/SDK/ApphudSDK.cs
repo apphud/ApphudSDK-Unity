@@ -369,6 +369,18 @@ namespace Apphud.Unity.SDK
         /// <param name="identifier">Optional. Identifier that matches Apphud and the Attribution provider.</param>
         /// <param name="callback">Optional. A closure that returns `true` if the data was successfully sent to Apphud.</param>
         public static void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null) => _sdk.AddAttribution(provider, data, identifier);
+
+        /// <summary>
+        /// Web-to-Web flow only. Attempts to attribute the user with the provided attribution data.
+        /// If the `data` parameter contains either `aph_user_id` or `apphud_user_id`, the SDK will submit this information to the Apphud server.
+        /// The server will return a premium web user if found; otherwise, the callback will return `false`.
+        /// Additionally, the delegate methods `apphudSubscriptionsUpdated` and `apphudDidChangeUserID` will be called.
+        /// The callback returns `true` if the user is successfully attributed via the web and includes the updated `ApphudUser` object.
+        /// After receiving the callback, you can use the `ApphudSDK.HasPremiumAccess()` method to check if the user has premium access, which will return `true` if the user has premium access.
+        /// </summary>
+        /// <param name="data">A map containing the attribution data.</param>
+        /// <param name="callback">Returns a boolean indicating whether the web attribution was successful, along with the updated `ApphudUser` object (if applicable).</param>
+        public static void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback) => _sdk.AttributeFromWeb(data, callback);
 #if APPHUD_FB
         /// <summary>
         /// Submits attribution data to Apphud from Facebook SDK.

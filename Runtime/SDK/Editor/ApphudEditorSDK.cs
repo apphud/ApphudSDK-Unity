@@ -104,6 +104,11 @@ namespace Apphud.Unity.Editor
             ApphudEditorUtils.LogNotSupportedWarning();
         }
 
+        public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)
+        {
+            ApphudEditorUtils.LogNotSupportedWarning();
+        }
+
 #if APPHUD_FB
         public void AddFacebookAttribution(Action<string> onError = null)
         {
