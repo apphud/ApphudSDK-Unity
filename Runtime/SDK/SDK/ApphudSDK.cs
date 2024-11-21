@@ -204,10 +204,8 @@ namespace Apphud.Unity.SDK
         /// If both are provided, `productId` will be used.
         /// </summary>
         /// <param name="daysCount">The number of days for the free premium access. For a lifetime promotion, pass a large number.</param>
-        /// <param name="productId">(Optional) The product ID of the subscription for the promotion.</param>
-        /// <param name="permissionGroup">(Optional) The permission group for the subscription. Use when you have multiple groups.</param>
         /// <param name="callback">(Optional) Returns `true` if the promotional subscription was granted.</param>
-        public static void GrantPromotional(int daysCount, string productId = null, ApphudGroup permissionGroup = null, Action<bool> callback = null) => _sdk.GrantPromotional(daysCount, productId, permissionGroup, callback);
+        public static void GrantPromotional(int daysCount, Action<bool> callback = null) => _sdk.GrantPromotional(daysCount, callback);
 
         /// <summary>
         /// Determines if the user has active premium access, which includes any active subscription or non-renewing purchase (lifetime).
@@ -372,9 +370,10 @@ namespace Apphud.Unity.SDK
 
         /// <summary>
         /// Web-to-Web flow only. Attempts to attribute the user with the provided attribution data.
-        /// If the `data` parameter contains either `aph_user_id` or `apphud_user_id`, the SDK will submit this information to the Apphud server.
-        /// The server will return a premium web user if found; otherwise, the callback will return `false`.
-        /// Additionally, the delegate methods `apphudSubscriptionsUpdated` and `apphudDidChangeUserID` will be called.
+        /// If the `data` parameter contains either `aph_user_id` or `apphud_user_id`, `email` or `apphud_user_email`, the SDK will submit this information to the Apphud server.
+        /// The server will return a restored web user if found; otherwise, the callback will return `false`.
+        /// __IMPORTANT:__ If the callback returns `true`, it doesn't mean the user has premium access, you should still call `Apphud.hasPremiumAccess()`
+        /// Additionally, the delegate methods `apphudSubscriptionsUpdated` and `apphudDidChangeUserID` may be called.
         /// The callback returns `true` if the user is successfully attributed via the web and includes the updated `ApphudUser` object.
         /// After receiving the callback, you can use the `ApphudSDK.HasPremiumAccess()` method to check if the user has premium access, which will return `true` if the user has premium access.
         /// </summary>

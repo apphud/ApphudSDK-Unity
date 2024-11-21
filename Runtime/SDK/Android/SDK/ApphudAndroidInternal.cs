@@ -194,9 +194,9 @@ namespace Apphud.Unity.Android.SDK
               );
         }
 
-        internal static void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback)
+        internal static void GrantPromotional(int daysCount, Action<bool> callback)
         {
-            Instance.Call("grantPromotional", daysCount, productId, permissionGroup, new KotlinGenericActionWrapper<bool>(callback, _debugLogsEnabled));
+            Instance.Call("grantPromotional", daysCount, null, null, new KotlinGenericActionWrapper<bool>(callback, _debugLogsEnabled));
         }
 
         internal static void RefreshUserData(Action<ApphudUser> callback)

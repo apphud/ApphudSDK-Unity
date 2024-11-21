@@ -48,9 +48,9 @@ namespace Apphud.Unity.Android.SDK
             ApphudAndroidInternal.RestorePurchases(callback);
         }
 
-        public void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback)
+        public void GrantPromotional(int daysCount, Action<bool> callback)
         {
-            ApphudAndroidInternal.GrantPromotional(daysCount, productId, permissionGroup, callback);
+            ApphudAndroidInternal.GrantPromotional(daysCount, callback);
         }
 
         public void RefreshUserData(Action<ApphudUser> callback) => ApphudAndroidInternal.RefreshUserData(callback);

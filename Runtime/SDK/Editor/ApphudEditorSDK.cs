@@ -66,7 +66,7 @@ namespace Apphud.Unity.Editor
             ApphudEditorUtils.LogNotSupportedWarning();
         }
 
-        public void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback)
+        public void GrantPromotional(int daysCount, Action<bool> callback)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }

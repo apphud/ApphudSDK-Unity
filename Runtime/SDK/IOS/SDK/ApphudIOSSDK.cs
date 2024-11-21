@@ -117,9 +117,9 @@ namespace Apphud.Unity.IOS.SDK
             });
         }
 
-        public void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback)
+        public void GrantPromotional(int daysCount, Action<bool> callback)
         {
-            ApphudIOSInternal.GrantPromotional(daysCount, productId, callback);
+            ApphudIOSInternal.GrantPromotional(daysCount, callback);
         }
 
         public bool HasPremiumAccess() => ApphudIOSInternal.ApphudUnity_hasPremiumAccess();
