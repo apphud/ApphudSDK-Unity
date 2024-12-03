@@ -29,14 +29,14 @@ import ApphudSDK
     @MainActor
     @objc public static func fetchPlacements(maxAttempts: Int, callback: @escaping (String?, String?) -> Void) {
         Apphud.fetchPlacements(maxAttempts: maxAttempts, { placements, error in
-            callback(placements.toJsonListOfMap(), error?.localizedDescription)
+            callback(placements.toJsonListOfMap(), error?.toMap().toJson())
         })
     }
     
     @MainActor
     @objc public static func paywallsDidLoadCallback(maxAttempts: Int, callback: @escaping (String, String?) -> Void) {
         Apphud.paywallsDidLoadCallback(maxAttempts: maxAttempts, { paywalls, error in
-            callback(paywalls.toJsonListOfMap(), error?.localizedDescription)
+            callback(paywalls.toJsonListOfMap(), error?.toMap().toJson())
         })
     }
     
@@ -113,7 +113,7 @@ import ApphudSDK
     @MainActor
     @objc public static func restorePurchases(callback: @escaping (String?, String?, String?) -> Void) {
         Apphud.restorePurchases() { subscriptions, nonRenewingPurchases, error in
-            callback(subscriptions?.toJsonListOfMap(), nonRenewingPurchases?.toJsonListOfMap(), error?.localizedDescription)
+            callback(subscriptions?.toJsonListOfMap(), nonRenewingPurchases?.toJsonListOfMap(), error?.toMap().toJson())
         }
     }
     
@@ -154,9 +154,31 @@ import ApphudSDK
     }
 
     @MainActor
-    @objc public static func loadFallbackPaywalls(callback: @escaping (String, String?) -> Void) {
+    @objc public static func attributeFromWeb(dataJson: String, callback: @escaping (Bool, String?) -> Void) {
+        var attributionData: [String: Any] = [:]
+        
+        if let data = dataJson.data(using: .utf8){
+            do {
+                if let object = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]{
+                    attributionData = object
+                }else{
+                    print("Failed to cast JSON data to a dictionary.")
+                }
+            } catch {
+                print("Error during JSON deserialization: \(error.localizedDescription)")
+            }
+            
+        }
+        
+        Apphud.attributeFromWeb(data: attributionData) { status, user in
+            callback(status, user?.toJson())
+        }
+    }
+
+    @MainActor
+    @objc public static func loadFallbackPaywalls(callback: @escaping (String?, String?) -> Void) {
         Apphud.loadFallbackPaywalls(callback: { paywalls, error in
-            callback(paywalls.toJson(), error?.localizedDescription)
+            callback(paywalls?.toJson(), error?.toMap().toJson())
         })
     }
 

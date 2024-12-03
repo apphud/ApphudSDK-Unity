@@ -11,7 +11,7 @@ namespace Apphud.Unity.IOS.Domain
     {
         public IOSApphudSubscriptionJson subscription;
         public IOSApphudNonRenewingPurchaseJson nonRenewingPurchase;
-        public string error;
+        public IOSApphudErrorJson error;
         public IOSSKPaymentTransactionJson transaction;
     }
 

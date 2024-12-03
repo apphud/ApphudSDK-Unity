@@ -61,11 +61,17 @@ namespace Apphud.Unity.Android.SDK
 
         internal static void ForceFlushUserProperties(Action<bool> completion)
         {
-            Instance.Call("forceFlushUserProperties", new KotlinGenericActionWrapper1<bool>(completion, _debugLogsEnabled));
+            Instance.Call("forceFlushUserProperties", new KotlinGenericActionWrapper<bool>(completion, _debugLogsEnabled));
         }
 
         internal static void LogOut() => Instance.Call("logout");
-        internal static void UpdateUserId(string userId) => Instance.Call("updateUserId", userId);
+        internal static void UpdateUserId(string userId, Action<AndroidApphudUser> callback)
+        {
+            Instance.Call("updateUserId", userId, new KotlinActionWrapper1(p1 =>
+            {
+                callback(p1 != null ? new AndroidApphudUser(p1) : null);
+            }, _debugLogsEnabled));
+        }
 
         internal static void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int? maxAttempts)
         {
@@ -188,9 +194,9 @@ namespace Apphud.Unity.Android.SDK
               );
         }
 
-        internal static void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback)
+        internal static void GrantPromotional(int daysCount, Action<bool> callback)
         {
-            Instance.Call("grantPromotional", daysCount, productId, permissionGroup, new KotlinGenericActionWrapper1<bool>(callback, _debugLogsEnabled));
+            Instance.Call("grantPromotional", daysCount, null, null, new KotlinGenericActionWrapper<bool>(callback, _debugLogsEnabled));
         }
 
         internal static void RefreshUserData(Action<ApphudUser> callback)
@@ -233,6 +239,18 @@ namespace Apphud.Unity.Android.SDK
         internal static void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
         {
             Instance.Call("addAttribution", provider.ToJavaEnum("com.apphud.sdk.ApphudAttributionProvider"), data.ToJavaMap(false), identifier);
+        }
+
+        internal static void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)
+        {
+            Instance.Call(
+                "attributeFromWeb",
+                data.ToJavaMap(false),
+                new KotlinGenericActionWrapper<bool, AndroidJavaObject>(
+                    (p1, p2) => callback(p1, new AndroidApphudUser(p2)),
+                    _debugLogsEnabled
+                )
+            );
         }
 
         internal static bool IsFallbackMode()

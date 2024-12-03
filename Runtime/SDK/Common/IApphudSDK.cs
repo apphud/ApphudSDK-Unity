@@ -23,7 +23,7 @@ namespace Apphud.Unity.Common
         void PaywallClosed(ApphudPaywall paywall);
         void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null);
         void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback);
-        void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback);
+        void GrantPromotional(int daysCount, Action<bool> callback);
 
         bool HasPremiumAccess();
         bool HasActiveSubscription();
@@ -34,6 +34,7 @@ namespace Apphud.Unity.Common
         void SetUserProperty(ApphudUserPropertyKey key, object value, bool setOnce);
         void IncrementUserProperty(ApphudUserPropertyKey key, object by);
         void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null);
+        void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback);
 #if APPHUD_FB
         void AddFacebookAttribution(Action<string> onError = null);
 #endif

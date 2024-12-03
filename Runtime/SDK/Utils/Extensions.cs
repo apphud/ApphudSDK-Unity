@@ -45,6 +45,16 @@ namespace Apphud.Unity.Common.Utils
 
         internal static IntPtr ActionToIntPtr<T>(this Action<T> action) => action.ToIntPtr();
 
+        internal static string ToIgnoreNullJson(this object data)
+        {
+            JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            return JsonConvert.SerializeObject(data, Formatting.None, serializerSettings);
+        }
+
         internal static List<OutValueType> ToListFromJson<OutValueType, JsonValueType>(this string json, Func<JsonValueType, OutValueType> convertFunction)
         {
             List<JsonValueType> jsonsList = JsonConvert.DeserializeObject<List<JsonValueType>>(json);

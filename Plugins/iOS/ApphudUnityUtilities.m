@@ -2,6 +2,7 @@
 #import <Foundation/Foundation.h>
 
 static CallbackBoolDelegate _callbackBoolDelegate = NULL;
+static CallbackBoolAndStringDelegate _callbackBoolAndStringDelegate = NULL;
 static CallbackDelegate _callbackDelegate = NULL;
 static Callback2Delegate _callback2Delegate = NULL;
 static Callback3Delegate _callback3Delegate = NULL;
@@ -32,6 +33,18 @@ void SendCallbackBoolToUnity(UnityAction action, bool data) {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (_callbackBoolDelegate != NULL) {
             _callbackBoolDelegate(action, data);
+        }
+    });
+}
+
+void SendCallbackBoolAndStringToUnity(UnityAction action, bool data, NSString *data2) {
+    if (action == NULL) {
+        return;
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (_callbackBoolDelegate != NULL) {
+            _callbackBoolAndStringDelegate(action, data, cstringFromString(data2));
         }
     });
 }
@@ -77,8 +90,9 @@ void SendCallback3ToUnity(UnityAction action, NSString *data, NSString *data2, N
 extern "C" {
 #endif
 
-void ApphudUnity_registerCallbackHandler(CallbackBoolDelegate callbackBoolDelegate,CallbackDelegate callbackDelegate, Callback2Delegate callback2Delegate, Callback3Delegate callback3Delegate) {
+void ApphudUnity_registerCallbackHandler(CallbackBoolDelegate callbackBoolDelegate, CallbackBoolAndStringDelegate callbackBoolAndStringDelegate, CallbackDelegate callbackDelegate, Callback2Delegate callback2Delegate, Callback3Delegate callback3Delegate) {
     _callbackBoolDelegate = callbackBoolDelegate;
+    _callbackBoolAndStringDelegate = callbackBoolAndStringDelegate;
     _callbackDelegate = callbackDelegate;
     _callback2Delegate = callback2Delegate;
     _callback3Delegate = callback3Delegate;

@@ -5,6 +5,8 @@ typedef const void* UnityAction;
 
 typedef void (*CallbackBoolDelegate)(UnityAction action, bool data);
 
+typedef void (*CallbackBoolAndStringDelegate)(UnityAction action, bool data, const char *data2);
+
 typedef void (*CallbackDelegate)(UnityAction action, const char *data);
 
 typedef void (*Callback2Delegate)(UnityAction action, const char *data, const char *data2);

@@ -10,6 +10,7 @@ const char *cstringFromString(NSString *str);
 char *makeStringCopy(const char *string);
 
 void SendCallbackBoolToUnity(UnityAction action, bool data);
+void SendCallbackBoolAndStringToUnity(UnityAction action, bool data, NSString *data2);
 void SendCallbackToUnity(UnityAction action, NSString *data);
 void SendCallback2ToUnity(UnityAction action, NSString *data, NSString *data2);
 void SendCallback3ToUnity(UnityAction action, NSString *data, NSString *data2, NSString *data3);

@@ -64,8 +64,8 @@ namespace Apphud.Unity.IOS.SDK
         internal static void RestorePurchases(Action<string, string, string> callback) => ApphudUnity_restorePurchases(callback.ToIntPtr());
 
         [DllImport("__Internal")]
-        private static extern void ApphudUnity_grantPromotional(int daysCount, string productId, IntPtr callback);
-        internal static void GrantPromotional(int daysCount, string productId, Action<bool> callback) => ApphudUnity_grantPromotional(daysCount, productId, callback.ToIntPtr());
+        private static extern void ApphudUnity_grantPromotional(int daysCount, string productId, string permissionGroupName, IntPtr callback);
+        internal static void GrantPromotional(int daysCount, Action<bool> callback) => ApphudUnity_grantPromotional(daysCount, null, null, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         internal static extern bool ApphudUnity_hasPremiumAccess();
@@ -94,6 +94,10 @@ namespace Apphud.Unity.IOS.SDK
         [DllImport("__Internal")]
         private static extern void ApphudUnity_addAttribution(string provider, string dataJson, string identifer, IntPtr callback);
         internal static void AddAttribution(ApphudAttributionProvider provider, string dataJson, string identifer, Action<bool> callback) => ApphudUnity_addAttribution(provider.ToString(), dataJson, identifer, callback.ToIntPtr());
+
+        [DllImport("__Internal")]
+        private static extern void ApphudUnity_attributeFromWeb(string dataJson, IntPtr callback);
+        internal static void AttributeFromWeb(string dataJson, Action<bool, string> callback) => ApphudUnity_attributeFromWeb(dataJson, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         private static extern void ApphudUnity_addFBAttribution(IntPtr callback);

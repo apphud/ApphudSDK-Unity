@@ -66,7 +66,7 @@ namespace Apphud.Unity.Editor
             ApphudEditorUtils.LogNotSupportedWarning();
         }
 
-        public void GrantPromotional(int daysCount, string productId, ApphudGroup permissionGroup, Action<bool> callback)
+        public void GrantPromotional(int daysCount, Action<bool> callback)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }
@@ -100,6 +100,11 @@ namespace Apphud.Unity.Editor
         public void IncrementUserProperty(ApphudUserPropertyKey key, object by) => ApphudEditorUtils.LogNotSupportedWarning();
 
         public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
+        {
+            ApphudEditorUtils.LogNotSupportedWarning();
+        }
+
+        public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }
