@@ -3,6 +3,6 @@
 		<androidPackage spec="com.apphud:ApphudSDK-Android:2.8.3"></androidPackage>
 	</androidPackages>
 	<iosPods>
-		<iosPod name="ApphudSDK" version="3.5.6"></iosPod>
+		<iosPod name="ApphudSDK" version="3.5.7"></iosPod>
 	</iosPods>
 </dependencies>
