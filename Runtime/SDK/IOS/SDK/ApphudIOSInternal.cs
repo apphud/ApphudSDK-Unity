@@ -64,8 +64,8 @@ namespace Apphud.Unity.IOS.SDK
         internal static void RestorePurchases(Action<string, string, string> callback) => ApphudUnity_restorePurchases(callback.ToIntPtr());
 
         [DllImport("__Internal")]
-        private static extern void ApphudUnity_grantPromotional(int daysCount, string productId, string permissionGroupName, IntPtr callback);
-        internal static void GrantPromotional(int daysCount, Action<bool> callback) => ApphudUnity_grantPromotional(daysCount, null, null, callback.ToIntPtr());
+        private static extern void ApphudUnity_grantPromotional(int daysCount, string productId, IntPtr callback);
+        internal static void GrantPromotional(int daysCount, Action<bool> callback) => ApphudUnity_grantPromotional(daysCount, null, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         internal static extern bool ApphudUnity_hasPremiumAccess();
