@@ -133,24 +133,44 @@ import ApphudSDK
     }
     
     @MainActor
-    @objc public static func addAttribution(provider: String, dataJson: String?, identifer: String?, callback: @escaping (Bool) -> Void) {
-        guard let attributionProviderEnum = ApphudAttributionProvider.fromString(provider) else {
-            print("Invalid provider string")
+    @objc
+    public static func setAttribution(provider: String, dataJson: String?, identifer: String?, callback: @escaping (Bool) -> Void) {
+        guard let providerEnum = ApphudAttributionProvider.fromString(provider) else {
+            print("Invalid provider string: \(provider)")
+            callback(false)
             return
         }
-        
-        var attributionData: [String: Any]?
-        
-        if let dataJson = dataJson, let data = dataJson.data(using: .utf8) {
+
+        var attributionData: ApphudAttributionData? = nil
+
+        if let dataJson, let data = dataJson.data(using: .utf8) {
             do {
-                let object = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                attributionData = object
+                if let dict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    attributionData = ApphudAttributionData(
+                        rawData:   (dict["rawData"] as? [String: Any]) ?? [:],
+                        adNetwork: dict["adNetwork"] as? String,
+                        channel:   dict["channel"]   as? String,
+                        campaign:  dict["campaign"]  as? String,
+                        adSet:     dict["adSet"]     as? String,
+                        creative:  dict["creative"]  as? String,
+                        keyword:   dict["keyword"]   as? String,
+                        custom1:   dict["custom1"]   as? String,
+                        custom2:   dict["custom2"]   as? String
+                    )
+                } else {
+                    print("JSON is not a dictionary")
+                }
             } catch {
                 print("Error during JSON deserialization: \(error.localizedDescription)")
             }
         }
-        
-        Apphud.addAttribution(data: attributionData, from: attributionProviderEnum, identifer: identifer, callback: callback)
+
+        Apphud.setAttribution(
+            data: attributionData,
+            from: providerEnum,
+            identifer: identifer,
+            callback: callback
+        )
     }
 
     @MainActor

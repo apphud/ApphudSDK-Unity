@@ -2,11 +2,17 @@ namespace Apphud.Unity.Domain
 {
     public enum ApphudAttributionProvider
     {
-        appsFlyer,
-        adjust,
+        APPSFLYER,
+        ADJUST,
 #if APPHUD_FB
-        facebook,
+        FACEBOOK,
 #endif
-        firebase
+        FIREBASE,
+        CUSTOM,
+        BRANCH,
+        SINGULAR,
+        TENJIN,
+        TIKTOK,
+        VOLUMUM
     }
 }

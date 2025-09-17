@@ -363,10 +363,10 @@ namespace Apphud.Unity.SDK
         /// Submits attribution data to Apphud from your attribution network provider.
         /// </summary>
         /// <param name="provider">Required. Attribution provider name.</param>
-        /// <param name="data">Optional. Attribution dictionary.</param>
+        /// <param name="data">Optional. Pass null for some integrations such as Apple Search Ads, Firebase.</param>
         /// <param name="identifier">Optional. Identifier that matches Apphud and the Attribution provider.</param>
         /// <param name="callback">Optional. A closure that returns `true` if the data was successfully sent to Apphud.</param>
-        public static void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null) => _sdk.AddAttribution(provider, data, identifier);
+        public static void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null) => _sdk.SetAttribution(provider, data, identifier);
 
         /// <summary>
         /// Web-to-Web flow only. Attempts to attribute the user with the provided attribution data.

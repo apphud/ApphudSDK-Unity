@@ -324,8 +324,8 @@ void ApphudUnity_incrementUserProperty(const char *key, const char *byJson) {
 extern "C" {
 #endif
 
-void ApphudUnity_addAttribution(const char *provider, const char *dataJson, const char *identifer, UnityAction callback) {
-    [ApphudUnityAPIWrapper addAttributionWithProvider:cstringToString(provider) dataJson:cstringToString(dataJson) identifer:cstringToString(identifer) callback:^(BOOL value) {
+void ApphudUnity_setAttribution(const char *provider, const char *dataJson, const char *identifer, UnityAction callback) {
+    [ApphudUnityAPIWrapper setAttributionWithProvider:cstringToString(provider) dataJson:cstringToString(dataJson) identifer:cstringToString(identifer) callback:^(BOOL value) {
         SendCallbackBoolToUnity(callback, value);
     }];
 }

@@ -92,8 +92,8 @@ namespace Apphud.Unity.IOS.SDK
         internal static extern void ApphudUnity_incrementUserProperty(string key, string byJson);
 
         [DllImport("__Internal")]
-        private static extern void ApphudUnity_addAttribution(string provider, string dataJson, string identifer, IntPtr callback);
-        internal static void AddAttribution(ApphudAttributionProvider provider, string dataJson, string identifer, Action<bool> callback) => ApphudUnity_addAttribution(provider.ToString(), dataJson, identifer, callback.ToIntPtr());
+        private static extern void ApphudUnity_setAttribution(string provider, string dataJson, string identifer, IntPtr callback);
+        internal static void SetAttribution(ApphudAttributionProvider provider, string dataJson, string identifer, Action<bool> callback) => ApphudUnity_setAttribution(provider.ToString(), dataJson, identifer, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         private static extern void ApphudUnity_attributeFromWeb(string dataJson, IntPtr callback);

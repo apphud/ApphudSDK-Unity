@@ -236,9 +236,10 @@ namespace Apphud.Unity.Android.SDK
             }
         }
 
-        internal static void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
+        internal static void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null)
         {
-            Instance.Call("addAttribution", provider.ToJavaEnum("com.apphud.sdk.ApphudAttributionProvider"), data.ToJavaMap(false), identifier);
+            AndroidApphudAttributionData androidData = new(data);
+            Instance.Call("setAttribution", androidData.JavaObject, provider.ToJavaEnum("com.apphud.sdk.ApphudAttributionProvider"), identifier);
         }
 
         internal static void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)

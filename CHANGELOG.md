@@ -1,3 +1,7 @@
+## [1.4.0] - 2025-09-16
+
+- [Breaking] The addAttribution method has been renamed to setAttribution, introducing the new ApphudAttributionData class. This allows developers to override attribution key mappings if needed.
+
 ## [1.3.0] - 2024-11-02
 
 - New methods

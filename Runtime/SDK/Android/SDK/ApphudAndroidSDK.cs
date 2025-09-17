@@ -67,9 +67,9 @@ namespace Apphud.Unity.Android.SDK
 
         public void IncrementUserProperty(ApphudUserPropertyKey key, object by) => ApphudAndroidInternal.IncrementUserProperty(key, by);
 
-        public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
+        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null)
         {
-            ApphudAndroidInternal.AddAttribution(provider, data, identifier);
+            ApphudAndroidInternal.SetAttribution(provider, data, identifier);
         }
 
         public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)
