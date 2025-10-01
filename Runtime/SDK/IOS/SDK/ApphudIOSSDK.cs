@@ -146,9 +146,9 @@ namespace Apphud.Unity.IOS.SDK
             ApphudIOSInternal.ApphudUnity_incrementUserProperty(key.key, by.ToIOSAnyJson());
         }
 
-        public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifer = null)
+        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifer = null)
         {
-            ApphudIOSInternal.AddAttribution(provider, data?.ToIgnoreNullJson(), identifer, status => { });
+            ApphudIOSInternal.SetAttribution(provider, data?.ToIgnoreNullJson(), identifer, status => { });
         }
 
         public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)

@@ -55,6 +55,8 @@ namespace Apphud.Unity.Domain
         public ApphudKind? Kind { get; protected set; }
         public string GroupId { get; protected set; }
         public string PurchaseToken { get; protected set; }
+        public string BasePlanId { get; protected set; }
+        public string Platform { get; protected set; }
 #endif
 
         /// <summary>

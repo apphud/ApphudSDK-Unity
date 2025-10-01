@@ -7,7 +7,9 @@ import FBSDKCoreKit
     @objc public static func addFBAttribution(callback: @escaping (Bool) -> Void) {
         let extInfo = _AppEventsDeviceInfo.shared.encodedDeviceInfo
         let anonId = AppEvents.shared.anonymousID
-        let data = ["extinfo": extInfo ?? ""]
-        Apphud.addAttribution(data: data, from: .facebook, identifer: anonId, callback: callback)
+        let data = ApphudAttributionData(
+            rawData: ["extinfo": extInfo]
+        )
+        Apphud.setAttribution(data: data, from: .facebook, identifer: anonId, callback: callback)
     }
 }

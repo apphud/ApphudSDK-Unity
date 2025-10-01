@@ -99,7 +99,7 @@ namespace Apphud.Unity.Editor
 
         public void IncrementUserProperty(ApphudUserPropertyKey key, object by) => ApphudEditorUtils.LogNotSupportedWarning();
 
-        public void AddAttribution(ApphudAttributionProvider provider, Dictionary<string, object> data = null, string identifier = null)
+        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }
