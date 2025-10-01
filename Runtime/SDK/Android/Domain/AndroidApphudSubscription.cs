@@ -23,6 +23,8 @@ namespace Apphud.Unity.Android.Domain
             Kind = _javaObject.GetEnum<ApphudKind>("kind");
             GroupId = _javaObject.Get<string>("groupId");
             PurchaseToken = javaObject.Get<string>("purchaseToken");
+            BasePlanId = javaObject.Get<string>("basePlanId");
+            Platform = javaObject.Get<string>("platform");
             IsActive = _javaObject.Call<bool>("isActive");
         }
     }

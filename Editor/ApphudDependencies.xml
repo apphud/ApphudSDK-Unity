@@ -1,6 +1,6 @@
 <dependencies>
 	<androidPackages>
-		<androidPackage spec="com.apphud:ApphudSDK-Android:2.9.3"></androidPackage>
+		<androidPackage spec="com.apphud:ApphudSDK-Android:2.9.6"></androidPackage>
 	</androidPackages>
 	<iosPods>
 		<iosPod name="ApphudSDK" version="3.6.2"></iosPod>
