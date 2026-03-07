@@ -65,7 +65,8 @@ namespace Apphud.Unity.Android.SDK
                         { "extinfo", extInfo }
                     };
 
-                    ApphudAndroidInternal.AddAttribution(ApphudAttributionProvider.facebook, attributionData, anonID);
+                    var data = new ApphudAttributionData(attributionData);
+                    ApphudAndroidInternal.SetAttribution(ApphudAttributionProvider.FACEBOOK, data, anonID);
                 }
             }
         }
