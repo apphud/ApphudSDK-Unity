@@ -98,22 +98,9 @@ void ApphudUnity_logOut(void) {
 extern "C" {
 #endif
 
-void ApphudUnity_updateUserId(const char *userId) {
-    [Apphud updateUserID:cstringToString(userId)];
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void ApphudUnity_fetchPlacementsWithCallback(int maxAttempts, UnityAction callback) {
-    [ApphudUnityAPIWrapper fetchPlacementsWithMaxAttempts:maxAttempts callback:^(NSString * _Nonnull placements, NSString * _Nullable error) {
-        SendCallback2ToUnity(callback, placements, error);
+void ApphudUnity_updateUserId(const char *userId, UnityAction callback) {
+    [ApphudUnityAPIWrapper updateUserID:cstringToString(userId) callback:^(NSString * _Nonnull result) {
+        SendCallbackToUnity(callback, result);
     }];
 }
 
@@ -121,13 +108,14 @@ void ApphudUnity_fetchPlacementsWithCallback(int maxAttempts, UnityAction callba
 }
 #endif
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void ApphudUnity_paywallsDidLoadCallback(int maxAttempts, UnityAction callback) {
-    [ApphudUnityAPIWrapper paywallsDidLoadCallbackWithMaxAttempts:maxAttempts callback:^(NSString * _Nonnull paywalls, NSString * _Nullable error) {
-        SendCallback2ToUnity(callback, paywalls, error);
+void ApphudUnity_fetchPlacementsWithCallback(int maxAttempts, bool forceRefresh, UnityAction callback) {
+    [ApphudUnityAPIWrapper fetchPlacementsWithMaxAttempts:maxAttempts forceRefresh:forceRefresh callback:^(NSString * _Nonnull placements, NSString * _Nullable error) {
+        SendCallback2ToUnity(callback, placements, error);
     }];
 }
 
@@ -164,8 +152,8 @@ const char * ApphudUnity_nonRenewingPurchases(void) {
 extern "C" {
 #endif
 
-void ApphudUnity_paywallShown(const char *paywallIdentifier, const char *placementIdentifier) {
-    [ApphudUnityAPIWrapper paywallShownWithIdentifier:cstringToString(paywallIdentifier) placementIdentifier:cstringToString(placementIdentifier)];
+void ApphudUnity_paywallShown(const char *placementIdentifier) {
+    [ApphudUnityAPIWrapper paywallShownWithPlacementIdentifier:cstringToString(placementIdentifier)];
 }
 
 #ifdef __cplusplus
@@ -176,20 +164,8 @@ void ApphudUnity_paywallShown(const char *paywallIdentifier, const char *placeme
 extern "C" {
 #endif
 
-void ApphudUnity_paywallClosed(const char *paywallIdentifier, const char *placementIdentifier) {
-    [ApphudUnityAPIWrapper paywallClosedWithIdentifier:cstringToString(paywallIdentifier) placementIdentifier:cstringToString(placementIdentifier)];
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void ApphudUnity_purchase(const char *productId,const char *placementIdentifier,const char *paywallIdentifier, UnityAction callback) {
-    [ApphudUnityAPIWrapper purchaseWithProductId:cstringToString(productId) placementIdentifier:cstringToString(placementIdentifier) paywallIdentifier:cstringToString(paywallIdentifier) callback:^(NSString * _Nonnull purchaseResult) {
+void ApphudUnity_purchase(const char *productId,const char *placementIdentifier, UnityAction callback) {
+    [ApphudUnityAPIWrapper purchaseWithProductId:cstringToString(productId) placementIdentifier:cstringToString(placementIdentifier) callback:^(NSString * _Nonnull purchaseResult) {
         SendCallbackToUnity(callback, purchaseResult);
     }];
 }
@@ -199,8 +175,8 @@ extern "C" {
 #endif
 
 void ApphudUnity_restorePurchases(UnityAction callback) {
-    [ApphudUnityAPIWrapper restorePurchasesWithCallback:^(NSString * _Nullable subscriptions, NSString * _Nullable nonRenewingPurchases, NSString * _Nullable error) {
-        SendCallback3ToUnity(callback, subscriptions, nonRenewingPurchases, error);
+    [ApphudUnityAPIWrapper restorePurchasesWithCallback:^(NSString * _Nullable subscription, NSString * _Nullable nonRenewingPurchase, NSString * _Nullable error) {
+        SendCallback3ToUnity(callback, subscription, nonRenewingPurchase, error);
     }];
 }
 
@@ -325,8 +301,8 @@ extern "C" {
 #endif
 
 void ApphudUnity_setAttribution(const char *provider, const char *dataJson, const char *identifer, UnityAction callback) {
-    [ApphudUnityAPIWrapper setAttributionWithProvider:cstringToString(provider) dataJson:cstringToString(dataJson) identifer:cstringToString(identifer) callback:^(BOOL value) {
-        SendCallbackBoolToUnity(callback, value);
+    [ApphudUnityAPIWrapper setAttributionWithProvider:cstringToString(provider) dataJson:cstringToString(dataJson) identifer:cstringToString(identifer) callback:^(BOOL value, NSString * _Nullable dictJson) {
+        SendCallbackBoolAndStringToUnity(callback, value, dictJson);
     }];
 }
 

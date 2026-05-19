@@ -34,11 +34,9 @@ namespace Apphud.Unity.Editor
         public void ForceFlushUserProperties(Action<bool> completion) => ApphudEditorUtils.LogNotSupportedWarning();
 
         public void LogOut() => ApphudEditorUtils.LogNotSupportedWarning();
-        public void UpdateUserId(string userId) => ApphudEditorUtils.LogNotSupportedWarning();
+        public void UpdateUserId(string userId, Action<ApphudUser> callback) => ApphudEditorUtils.LogNotSupportedWarning();
 
-        public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts) => ApphudEditorUtils.LogNotSupportedWarning();
-
-        public void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts) => ApphudEditorUtils.LogNotSupportedWarning();
+        public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts, bool forceRefresh) => ApphudEditorUtils.LogNotSupportedWarning();
 
         public List<ApphudSubscription> Subscriptions()
         {
@@ -54,14 +52,12 @@ namespace Apphud.Unity.Editor
 
         public void PaywallShown(ApphudPaywall paywall) => ApphudEditorUtils.LogNotSupportedWarning();
 
-        public void PaywallClosed(ApphudPaywall paywall) => ApphudEditorUtils.LogNotSupportedWarning();
-
         public void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }
 
-        public void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback)
+        public void RestorePurchases(Action<ApphudSubscription, ApphudNonRenewingPurchase, ApphudError> callback)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }
@@ -99,7 +95,7 @@ namespace Apphud.Unity.Editor
 
         public void IncrementUserProperty(ApphudUserPropertyKey key, object by) => ApphudEditorUtils.LogNotSupportedWarning();
 
-        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null)
+        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data, string identifier, Action<bool, Dictionary<string, object>> callback)
         {
             ApphudEditorUtils.LogNotSupportedWarning();
         }

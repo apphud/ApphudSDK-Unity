@@ -8,7 +8,9 @@ import AdServices
         if #available(iOS 14.3, *) {
             Task {
                 if let asaToken = try? AAAttribution.attributionToken() {
-                    Apphud.setAttribution(data: nil, from: .appleAdsAttribution, identifer: asaToken, callback: callback)
+                    Apphud.setAttribution(data: nil, from: .appleAdsAttribution, identifer: asaToken) { success, _ in
+                        callback(success)
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@
 
 using System;
 using Apphud.Unity.Domain;
+using Newtonsoft.Json;
 using UnityEngine.Scripting;
 
 namespace Apphud.Unity.IOS.Domain
@@ -22,6 +23,8 @@ namespace Apphud.Unity.IOS.Domain
 
     internal sealed class IOSApphudSubscription : ApphudSubscription
     {
+        internal IOSApphudSubscription(string json) : this(JsonConvert.DeserializeObject<IOSApphudSubscriptionJson>(json)) { }
+
         internal IOSApphudSubscription(IOSApphudSubscriptionJson json)
         {
             ProductId = json.productId;

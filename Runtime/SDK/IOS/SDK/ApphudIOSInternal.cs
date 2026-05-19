@@ -33,15 +33,12 @@ namespace Apphud.Unity.IOS.SDK
         internal static extern void ApphudUnity_logOut();
 
         [DllImport("__Internal")]
-        internal static extern void ApphudUnity_updateUserId(string userId);
+        private static extern void ApphudUnity_updateUserId(string userId, IntPtr callback);
+        internal static void UpdateUserId(string userId, Action<string> callback) => ApphudUnity_updateUserId(userId, callback.ToIntPtr());
 
         [DllImport("__Internal")]
-        private static extern void ApphudUnity_fetchPlacementsWithCallback(int maxAttempts, IntPtr callback);
-        internal static void FetchPlacements(int maxAttempts, Action<string, string> callback) => ApphudUnity_fetchPlacementsWithCallback(maxAttempts, callback.ToIntPtr());
-
-        [DllImport("__Internal")]
-        private static extern void ApphudUnity_paywallsDidLoadCallback(int maxAttempts, IntPtr callback);
-        internal static void PaywallsDidLoadCallback(int maxAttempts, Action<string, string> callback) => ApphudUnity_paywallsDidLoadCallback(maxAttempts, callback.ToIntPtr());
+        private static extern void ApphudUnity_fetchPlacementsWithCallback(int maxAttempts, bool forceRefresh, IntPtr callback);
+        internal static void FetchPlacements(int maxAttempts, bool forceRefresh, Action<string, string> callback) => ApphudUnity_fetchPlacementsWithCallback(maxAttempts, forceRefresh, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         internal static extern string ApphudUnity_subscriptions();
@@ -50,14 +47,11 @@ namespace Apphud.Unity.IOS.SDK
         internal static extern string ApphudUnity_nonRenewingPurchases();
 
         [DllImport("__Internal")]
-        internal static extern void ApphudUnity_paywallShown(string placementIdentifier, string paywallIdentifier);
+        internal static extern void ApphudUnity_paywallShown(string placementIdentifier);
 
         [DllImport("__Internal")]
-        internal static extern void ApphudUnity_paywallClosed(string placementIdentifier, string paywallIdentifier);
-
-        [DllImport("__Internal")]
-        private static extern void ApphudUnity_purchase(string productId, string placementIdentifier, string paywallIdentifier, IntPtr callback);
-        internal static void Purchase(string productId, string placementIdentifier, string paywallIdentifier, Action<string> callback) => ApphudUnity_purchase(productId, placementIdentifier, paywallIdentifier, callback.ToIntPtr());
+        private static extern void ApphudUnity_purchase(string productId, string placementIdentifier, IntPtr callback);
+        internal static void Purchase(string productId, string placementIdentifier, Action<string> callback) => ApphudUnity_purchase(productId, placementIdentifier, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         private static extern void ApphudUnity_restorePurchases(IntPtr callback);
@@ -93,7 +87,7 @@ namespace Apphud.Unity.IOS.SDK
 
         [DllImport("__Internal")]
         private static extern void ApphudUnity_setAttribution(string provider, string dataJson, string identifer, IntPtr callback);
-        internal static void SetAttribution(ApphudAttributionProvider provider, string dataJson, string identifer, Action<bool> callback) => ApphudUnity_setAttribution(provider.ToString(), dataJson, identifer, callback.ToIntPtr());
+        internal static void SetAttribution(ApphudAttributionProvider provider, string dataJson, string identifer, Action<bool, string> callback) => ApphudUnity_setAttribution(provider.ToString(), dataJson, identifer, callback.ToIntPtr());
 
         [DllImport("__Internal")]
         private static extern void ApphudUnity_attributeFromWeb(string dataJson, IntPtr callback);

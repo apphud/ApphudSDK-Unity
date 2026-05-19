@@ -85,52 +85,50 @@ namespace Apphud.Unity.SDK
         public static void LogOut() => _sdk.LogOut();
 
         /// <summary>
-        /// Updates the user ID. This method should only be called after the user is registered.
+        /// Updates the user ID. Use this when you need to change the user identifier during the app's runtime.
+        ///
+        /// [Android] This method should only be called after the user is registered,
+        /// for example, inside the `ApphudListener.userDidLoad` callback.
         /// </summary>
-        /// <param name="userId">The new user ID value to be set.</param>
-        public static void UpdateUserId(string userId) => _sdk.UpdateUserId(userId);
+        /// <param name="userId">Required. The new user ID value.</param>
+        /// <param name="callback">
+        /// Optional. A closure that gets called with the updated `ApphudUser` object.
+        /// The user object may be `null` if user registering fails.
+        /// </param>
+        public static void UpdateUserId(string userId, Action<ApphudUser> callback = null) => _sdk.UpdateUserId(userId, callback);
 
         /// <summary>
-        /// Returns the placements from Product Hub > Placements, potentially altered
-        /// based on the user's involvement in A/B testing, if applicable.
-        /// 
-        /// __Note:__ Method waits until the inner `ProductDetails` or 'SKProduct' are loaded from Google Play or App Store.
-        /// 
+        /// Retrieves the placements configured in Mission control &gt; Targetings, potentially altered
+        /// based on the user's involvement in A/B testing, if any.
+        ///
+        /// Awaits until the inner `SKProduct`s (iOS) or `ProductDetails` (Android) are loaded
+        /// from the App Store / Google Play.
+        ///
         /// A placement is a specific location within a user's journey
-        ///  (such as onboarding, settings, etc.) where its internal paywall is intended to be displayed.
-        ///  
+        /// (such as onboarding, settings, etc.) where its internal paywall is intended to be displayed.
+        /// See documentation for details: https://docs.apphud.com/docs/placements.
+        ///
         /// __IMPORTANT:__ The callback may return both placements and an error simultaneously.
-        /// If there is an issue with Google Billing or StoreKit Error and inner product details could not be fetched,
+        /// If there is an issue with Google Billing or StoreKit and inner product details could not be fetched,
         /// an error will be returned along with the raw placements array.
         /// This allows for handling situations where partial data is available.
         /// </summary>
         /// <param name="callback">
         /// The callback function that is invoked with the list of `ApphudPlacement` objects.
-        /// Second parameter in callback represents optional error, which may be on Google (BillingClient issue) or Appstore (StoreKit Error) or Apphud side.
+        /// Second parameter in callback represents optional error, which may be on
+        /// Google (BillingClient issue), App Store (StoreKit error), or Apphud side.
         /// </param>
-        /// <param name="maxAttempts">Number of request attempts before throwing an error. Must be between 1 and 10. Default value is 3.</param>
-        public static void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts = 3) => _sdk.FetchPlacements(callback, maxAttempts);
-
-        /// <summary>
-        /// Returns the paywalls from Product Hub > Paywalls, potentially altered
-        /// based on the user's involvement in A/B testing, if applicable.
-        /// 
-        /// __Note:__ Method waits until the inner `ProductDetails` or 'SKProduct' are loaded from Google Play or App Store.
-        /// 
-        /// Each paywall contains an array of `ApphudProduct` objects that can be used for purchases.
-        /// `ApphudProduct` is Apphud's wrapper around `ProductDetails` or SKProduct.
-        /// 
-        /// __IMPORTANT:__ The callback may return both paywalls and an error simultaneously.
-        /// If there is an issue with Google Billing or StoreKit Error and inner product details could not be fetched,
-        /// an error will be returned along with the raw paywalls array.
-        /// This allows for handling situations where partial data is available.    
-        /// </summary>
-        /// <param name="callback">
-        /// The callback function that is invoked with the list of `ApphudPaywall` objects.
-        /// Second parameter in callback represents optional error, which may be on Google (BillingClient issue) or Appstore (StoreKit Error) or Apphud side.
+        /// <param name="maxAttempts">
+        /// [iOS] Number of request attempts before throwing an error. Must be between 1 and 10. Default value is 3.
+        /// [Android] Ignored — Android uses a fixed `preferredTimeout` (the approximate duration, in seconds,
+        /// after which the SDK ceases retry attempts to the Apphud backend; default and minimum is 10.0 seconds).
         /// </param>
-        /// <param name="maxAttempts">Number of request attempts before throwing an error. Must be between 1 and 10. Default value is 3.</param>
-        public static void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts = 3) => _sdk.PaywallsDidLoadCallback(callback, maxAttempts);
+        /// <param name="forceRefresh">
+        /// When set to `true`, forces Apphud to refresh user data and reload placements from the server
+        /// before returning the result. Use this when you need to apply updated audience segmentation or
+        /// A/B test assignments (for example, after changing user properties that affect placement targeting).
+        /// </param>
+        public static void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts = 3, bool forceRefresh = false) => _sdk.FetchPlacements(callback, maxAttempts, forceRefresh);
 
         /// <summary>
         /// Retrieves all the subscription objects that the user has ever purchased.
@@ -152,13 +150,6 @@ namespace Apphud.Unity.SDK
         /// </summary>
         /// <param name="paywall">The `ApphudPaywall` object representing the paywall shown to the user.</param>
         public static void PaywallShown(ApphudPaywall paywall) => _sdk.PaywallShown(paywall);
-
-        /// <summary>
-        /// Call this method when your paywall screen is dismissed without a purchase.
-        /// This is required for A/B testing analysis.
-        /// </summary>
-        /// <param name="paywall">The `ApphudPaywall` object representing the paywall that was closed.</param>
-        public static void PaywallClosed(ApphudPaywall paywall) => _sdk.PaywallClosed(paywall);
 
         /// <summary>
         /// Initiates the purchase process for a specified product and automatically
@@ -193,8 +184,8 @@ namespace Apphud.Unity.SDK
         /// Note: Even if the callback returns some subscription, it doesn't necessarily mean that
         /// the subscription is active. Check `subscription.isActive()` for subscription status.
         /// </summary>
-        /// <param name="callback">Required. A callback that returns an array of subscriptions, in-app products, or an optional error.</param>
-        public static void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback) => _sdk.RestorePurchases(callback);
+        /// <param name="callback">Required. A callback that returns the first active subscription, in-app product, or an optional error.</param>
+        public static void RestorePurchases(Action<ApphudSubscription, ApphudNonRenewingPurchase, ApphudError> callback) => _sdk.RestorePurchases(callback);
 
         /// <summary>
         /// Grants a free promotional subscription to the user.
@@ -360,13 +351,27 @@ namespace Apphud.Unity.SDK
         public static void IncrementUserProperty(ApphudUserPropertyKey key, object by) => _sdk.IncrementUserProperty(key, by);
 
         /// <summary>
-        /// Submits attribution data to Apphud from your attribution network provider.
+        /// Submits attribution data to Apphud.
+        ///
+        /// Note: Properly setting up attribution data is key for tracking and optimizing user acquisition
+        /// strategies and measuring the ROI of marketing campaigns.
         /// </summary>
-        /// <param name="provider">Required. Attribution provider name.</param>
-        /// <param name="data">Optional. Pass null for some integrations such as Apple Search Ads, Firebase.</param>
-        /// <param name="identifier">Optional. Identifier that matches Apphud and the Attribution provider.</param>
-        /// <param name="callback">Optional. A closure that returns `true` if the data was successfully sent to Apphud.</param>
-        public static void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null) => _sdk.SetAttribution(provider, data, identifier);
+        /// <param name="provider">Required. The name of the attribution provider.</param>
+        /// <param name="data">
+        /// [iOS] Optional. The `ApphudAttributionData` model. Pass `null` for some integrations
+        /// such as Apple Search Ads, Firebase.
+        /// [Android] Required. Class with attribution dictionary and custom data.
+        /// </param>
+        /// <param name="identifier">Optional. An identifier that matches between Apphud and the Attribution provider.</param>
+        /// <param name="callback">
+        /// Optional. A closure called when the attribution request finishes.
+        /// The first parameter indicates whether the data was successfully sent to Apphud.
+        /// The second parameter contains the attribution payload returned by Apphud, if available.
+        /// The payload may include the following keys: `device_id`, `attribution`, `raw_data`, `provider`.
+        ///
+        /// [Android] No native callback is available; the closure is invoked synchronously with `(true, null)` after dispatch.
+        /// </param>
+        public static void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null, Action<bool, Dictionary<string, object>> callback = null) => _sdk.SetAttribution(provider, data, identifier, callback);
 
         /// <summary>
         /// Web-to-Web flow only. Attempts to attribute the user with the provided attribution data.

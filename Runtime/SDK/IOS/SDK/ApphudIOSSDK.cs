@@ -45,20 +45,12 @@ namespace Apphud.Unity.IOS.SDK
 
         public void LogOut() => ApphudIOSInternal.ApphudUnity_logOut();
 
-        public void UpdateUserId(string userId) => ApphudIOSInternal.ApphudUnity_updateUserId(userId);
+        public void UpdateUserId(string userId, Action<ApphudUser> callback) => ApphudIOSInternal.UpdateUserId(userId, json => callback?.Invoke(json != null ? new IOSApphudUser(json) : null));
 
-        public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts)
+        public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts, bool forceRefresh)
         {
-            ApphudIOSInternal.FetchPlacements(maxAttempts, (placementsJson, errorJson) => callback(
+            ApphudIOSInternal.FetchPlacements(maxAttempts, forceRefresh, (placementsJson, errorJson) => callback(
                 placementsJson.ToListFromJson<ApphudPlacement, IOSApphudPlacementJson>(json => new IOSApphudPlacement(json)),
-                errorJson != null ? new IOSApphudError(errorJson) : null)
-            );
-        }
-
-        public void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts)
-        {
-            ApphudIOSInternal.PaywallsDidLoadCallback(maxAttempts, (paywallsJson, errorJson) => callback(
-                paywallsJson.ToListFromJson<ApphudPaywall, IOSApphudPaywallJson>(json => new IOSApphudPaywall(json, null)),
                 errorJson != null ? new IOSApphudError(errorJson) : null)
             );
         }
@@ -83,12 +75,7 @@ namespace Apphud.Unity.IOS.SDK
 
         public void PaywallShown(ApphudPaywall paywall)
         {
-            ApphudIOSInternal.ApphudUnity_paywallShown(paywall.Identifier, paywall.PlacementIdentifier);
-        }
-
-        public void PaywallClosed(ApphudPaywall paywall)
-        {
-            ApphudIOSInternal.ApphudUnity_paywallClosed(paywall.Identifier, paywall.PlacementIdentifier);
+            ApphudIOSInternal.ApphudUnity_paywallShown(paywall.PlacementIdentifier);
         }
 
         public void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null)
@@ -96,22 +83,17 @@ namespace Apphud.Unity.IOS.SDK
             ApphudIOSInternal.Purchase(
                 product.ProductId,
                 product.PlacementIdentifier,
-                product.PaywallIdentifier,
                 (json) => callback?.Invoke(new IOSApphudPurchaseResult(json))
             );
         }
 
-        public void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback)
+        public void RestorePurchases(Action<ApphudSubscription, ApphudNonRenewingPurchase, ApphudError> callback)
         {
-            ApphudIOSInternal.RestorePurchases((subscriptionsJson, nonRenewingPurchasesJson, errorJson) =>
+            ApphudIOSInternal.RestorePurchases((subscriptionJson, nonRenewingPurchaseJson, errorJson) =>
             {
                 callback(
-                    subscriptionsJson.ToListFromJson<ApphudSubscription, IOSApphudSubscriptionJson>(
-                    json => new IOSApphudSubscription(json)
-                    ),
-                    nonRenewingPurchasesJson.ToListFromJson<ApphudNonRenewingPurchase, IOSApphudNonRenewingPurchaseJson>(
-                        json => new IOSApphudNonRenewingPurchase(json)
-                    ),
+                    subscriptionJson != null ? new IOSApphudSubscription(subscriptionJson) : null,
+                    nonRenewingPurchaseJson != null ? new IOSApphudNonRenewingPurchase(nonRenewingPurchaseJson) : null,
                     errorJson != null ? new IOSApphudError(errorJson) : null
                 );
             });
@@ -146,9 +128,15 @@ namespace Apphud.Unity.IOS.SDK
             ApphudIOSInternal.ApphudUnity_incrementUserProperty(key.key, by.ToIOSAnyJson());
         }
 
-        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifer = null)
+        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data, string identifer, Action<bool, Dictionary<string, object>> callback)
         {
-            ApphudIOSInternal.SetAttribution(provider, data?.ToIgnoreNullJson(), identifer, status => { });
+            ApphudIOSInternal.SetAttribution(provider, data?.ToIgnoreNullJson(), identifer, (status, dictJson) =>
+            {
+                Dictionary<string, object> dict = !string.IsNullOrEmpty(dictJson)
+                    ? JsonConvert.DeserializeObject<Dictionary<string, object>>(dictJson)
+                    : null;
+                callback?.Invoke(status, dict);
+            });
         }
 
         public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)

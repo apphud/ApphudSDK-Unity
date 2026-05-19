@@ -24,11 +24,9 @@ namespace Apphud.Unity.Android.SDK
         public void ForceFlushUserProperties(Action<bool> completion) => ApphudAndroidInternal.ForceFlushUserProperties(completion);
 
         public void LogOut() => ApphudAndroidInternal.LogOut();
-        public void UpdateUserId(string userId) => ApphudAndroidInternal.UpdateUserId(userId, (user) => { });
+        public void UpdateUserId(string userId, Action<ApphudUser> callback) => ApphudAndroidInternal.UpdateUserId(userId, user => callback?.Invoke(user));
 
-        public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts) => ApphudAndroidInternal.FetchPlacements(callback, maxAttempts);
-
-        public void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts) => ApphudAndroidInternal.PaywallsDidLoadCallback(callback, maxAttempts);
+        public void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts, bool forceRefresh) => ApphudAndroidInternal.FetchPlacements(callback, maxAttempts, forceRefresh);
 
         public List<ApphudSubscription> Subscriptions() => ApphudAndroidInternal.Subscriptions();
 
@@ -36,14 +34,12 @@ namespace Apphud.Unity.Android.SDK
 
         public void PaywallShown(ApphudPaywall paywall) => ApphudAndroidInternal.PaywallShown(paywall);
 
-        public void PaywallClosed(ApphudPaywall paywall) => ApphudAndroidInternal.PaywallClosed(paywall);
-
         public void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null)
         {
             ApphudAndroidInternal.Purchase(product, offerIdToken, oldToken, replacementMode, consumableInAppProduct, callback);
         }
 
-        public void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback)
+        public void RestorePurchases(Action<ApphudSubscription, ApphudNonRenewingPurchase, ApphudError> callback)
         {
             ApphudAndroidInternal.RestorePurchases(callback);
         }
@@ -67,9 +63,10 @@ namespace Apphud.Unity.Android.SDK
 
         public void IncrementUserProperty(ApphudUserPropertyKey key, object by) => ApphudAndroidInternal.IncrementUserProperty(key, by);
 
-        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null)
+        public void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data, string identifier, Action<bool, Dictionary<string, object>> callback)
         {
             ApphudAndroidInternal.SetAttribution(provider, data, identifier);
+            callback?.Invoke(true, null);
         }
 
         public void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback)

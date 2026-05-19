@@ -13,16 +13,14 @@ namespace Apphud.Unity.Common
         void DeferPlacements();
         void ForceFlushUserProperties(Action<bool> completion);
         void LogOut();
-        void UpdateUserId(string userId);
+        void UpdateUserId(string userId, Action<ApphudUser> callback);
 
-        void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts);
-        void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int maxAttempts);
+        void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int maxAttempts, bool forceRefresh);
         List<ApphudSubscription> Subscriptions();
         List<ApphudNonRenewingPurchase> NonRenewingPurchases();
         void PaywallShown(ApphudPaywall paywall);
-        void PaywallClosed(ApphudPaywall paywall);
         void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null);
-        void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback);
+        void RestorePurchases(Action<ApphudSubscription, ApphudNonRenewingPurchase, ApphudError> callback);
         void GrantPromotional(int daysCount, Action<bool> callback);
 
         bool HasPremiumAccess();
@@ -33,7 +31,7 @@ namespace Apphud.Unity.Common
         void OptOutOfTracking();
         void SetUserProperty(ApphudUserPropertyKey key, object value, bool setOnce);
         void IncrementUserProperty(ApphudUserPropertyKey key, object by);
-        void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data = null, string identifier = null);
+        void SetAttribution(ApphudAttributionProvider provider, ApphudAttributionData data, string identifier, Action<bool, Dictionary<string, object>> callback);
         void AttributeFromWeb(Dictionary<string, object> data, Action<bool, ApphudUser> callback);
 #if APPHUD_FB
         void AddFacebookAttribution(Action<string> onError = null);
