@@ -1,3 +1,17 @@
+## [1.5.0] - 2026-05-19
+
+- [Breaking] Removed methods
+  - PaywallsDidLoadCallback
+  - PaywallClosed
+- [Breaking] Modified methods
+  - RestorePurchases callback now returns a single ApphudSubscription and a single ApphudNonRenewingPurchase (not lists). On Android, where the native SDK still returns lists, the wrapper picks the first active item (or falls back to the first item if none are active). For full restored history use Subscriptions() / NonRenewingPurchases().
+- Modified methods
+  - UpdateUserId now accepts optional completion callback
+  - FetchPlacements now accepts a forceRefresh flag
+  - SetAttribution now accepts optional completion callback
+- Updated native iOS SDK to 4.0.4
+- Updated native Android SDK to 3.1.0 (Google Billing 8.3.0)
+
 ## [1.4.0] - 2025-09-16
 
 - [Breaking] The addAttribution method has been renamed to setAttribution, introducing the new ApphudAttributionData class. This allows developers to override attribution key mappings if needed.

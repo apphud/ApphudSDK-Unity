@@ -25,18 +25,18 @@ import ApphudSDK
     @objc public static func forceFlushUserProperties(completion: @escaping (Bool) -> Void) {
         Apphud.forceFlushUserProperties(completion: completion)
     }
-    
+
     @MainActor
-    @objc public static func fetchPlacements(maxAttempts: Int, callback: @escaping (String?, String?) -> Void) {
-        Apphud.fetchPlacements(maxAttempts: maxAttempts, { placements, error in
-            callback(placements.toJsonListOfMap(), error?.toMap().toJson())
+    @objc public static func updateUserID(_ userID: String, callback: @escaping (String?) -> Void) {
+        Apphud.updateUserID(userID, callback: { user in
+            callback(user.toJson())
         })
     }
     
     @MainActor
-    @objc public static func paywallsDidLoadCallback(maxAttempts: Int, callback: @escaping (String, String?) -> Void) {
-        Apphud.paywallsDidLoadCallback(maxAttempts: maxAttempts, { paywalls, error in
-            callback(paywalls.toJsonListOfMap(), error?.toMap().toJson())
+    @objc public static func fetchPlacements(maxAttempts: Int, forceRefresh: Bool, callback: @escaping (String?, String?) -> Void) {
+        Apphud.fetchPlacements(maxAttempts: maxAttempts, forceRefresh: forceRefresh, { placements, error in
+            callback(placements.toJsonListOfMap(), error?.toMap().toJson())
         })
     }
     
@@ -53,9 +53,9 @@ import ApphudSDK
     }
     
     @MainActor
-    @objc public static func paywallShown(identifier:String, placementIdentifier: String?) {
+    @objc public static func paywallShown(placementIdentifier: String) {
         Task{@MainActor in
-            let paywall = await findPaywall(identifier: identifier, placementIdentifier: placementIdentifier)
+            let paywall = await findPaywall(placementIdentifier: placementIdentifier)
             if(paywall != nil) {
                 Apphud.paywallShown(paywall!)
             }
@@ -63,48 +63,25 @@ import ApphudSDK
     }
     
     @MainActor
-    @objc public static func paywallClosed(identifier:String, placementIdentifier: String?) {
-        Task{@MainActor in
-            let paywall = await findPaywall(identifier: identifier, placementIdentifier: placementIdentifier)
-            if(paywall != nil) {
-                Apphud.paywallClosed(paywall!)
-            }
-        }
-    }
-    
-    @MainActor
-    @objc public static func purchase(productId: String?, placementIdentifier: String?, paywallIdentifier: String?, callback: @escaping (String) -> Void) {
+    @objc public static func purchase(productId: String?, placementIdentifier: String, callback: @escaping (String) -> Void) {
         
         Task {@MainActor in
                         
             var product: ApphudProduct?
             
-            if let placementID = placementIdentifier {
-                let placement = await Apphud.placement(placementID)
-                product = placement?.paywall?.products.first { $0.productId == productId }
-            }
+            let placement = await Apphud.placement(placementIdentifier)
+            product = placement?.paywall?.products.first { $0.productId == productId }
             
             if let product = product {
                 Apphud.purchase(product) { response in
                     handlePurchase(response: response, callback: callback)
                 }
             } else if let productId = productId {
-                Apphud.paywallsDidLoadCallback { paywalls, error in
-                    let paywall = paywalls.first { $0.identifier == paywallIdentifier }
-                    product = paywall?.products.first { $0.productId == productId }
-                    
-                    if let product {
-                        Apphud.purchase(product) { response in
-                            handlePurchase(response: response, callback: callback)
-                        }
-                    } else {
-                        Apphud.purchase(productId) { response in
-                            handlePurchase(response: response, callback: callback)
-                        }
-                    }
+                Apphud.purchase(productId) { response in
+                    handlePurchase(response: response, callback: callback)
                 }
             } else {
-                let message = "Cant find product with productId:\(productId), paywallIdentifier:\(String(describing: paywallIdentifier)), placementIdentifier:\(String(describing: placementIdentifier))";
+                let message = "ProductId is empty";
                 callback("{\"error\":\"\(message)\"}")
             }
         }
@@ -112,8 +89,8 @@ import ApphudSDK
     
     @MainActor
     @objc public static func restorePurchases(callback: @escaping (String?, String?, String?) -> Void) {
-        Apphud.restorePurchases() { subscriptions, nonRenewingPurchases, error in
-            callback(subscriptions?.toJsonListOfMap(), nonRenewingPurchases?.toJsonListOfMap(), error?.toMap().toJson())
+        Apphud.restorePurchases() { result in
+            callback(result.subscription?.toMap().toJson(), result.nonRenewingPurchase?.toMap().toJson(), result.error?.toMap().toJson())
         }
     }
     
@@ -131,13 +108,13 @@ import ApphudSDK
     @objc public static func incrementUserProperty(key: String, byJson: String) {
         Apphud.incrementUserProperty(key: .init(key), by: byJson.toAnyFromUnityJson()!)
     }
-    
+
     @MainActor
     @objc
-    public static func setAttribution(provider: String, dataJson: String?, identifer: String?, callback: @escaping (Bool) -> Void) {
+    public static func setAttribution(provider: String, dataJson: String?, identifer: String?, callback: @escaping (Bool, String?) -> Void) {
         guard let providerEnum = ApphudAttributionProvider.fromString(provider) else {
             print("Invalid provider string: \(provider)")
-            callback(false)
+            callback(false, nil)
             return
         }
 
@@ -168,9 +145,16 @@ import ApphudSDK
         Apphud.setAttribution(
             data: attributionData,
             from: providerEnum,
-            identifer: identifer,
-            callback: callback
-        )
+            identifer: identifer
+        ) { success, attribution in
+            var attributionJson: String? = nil
+            if let attribution {
+                if let jsonData = try? JSONSerialization.data(withJSONObject: attribution) {
+                    attributionJson = String(data: jsonData, encoding: .utf8)
+                }
+            }
+            callback(success, attributionJson)
+        }
     }
 
     @MainActor
@@ -205,25 +189,13 @@ import ApphudSDK
     @MainActor
     @objc public static func setHeaders() {
         ApphudHttpClient.shared.sdkType = "unity"
-        ApphudHttpClient.shared.sdkVersion = "1.1.0"
+        ApphudHttpClient.shared.sdkVersion = "1.5.0"
     }
     
     @MainActor
-    private static func findPaywall(identifier:String, placementIdentifier: String?) async -> ApphudPaywall? {
-        if(placementIdentifier != nil) {
-            let placements = await Apphud.placements()
-            return placements.first(where: {pl in pl.identifier == placementIdentifier})?.paywall
-        }
-        else {
-            return await withCheckedContinuation { continuation in
-                Apphud.paywallsDidLoadCallback { pwls, _ in
-                    let pwl = pwls.first(where: { pw in return pw.identifier == identifier })
-                    Task {
-                        continuation.resume(returning: pwl)
-                    }
-                }
-            }
-        }
+    private static func findPaywall(placementIdentifier: String?) async -> ApphudPaywall? {
+        let placements = await Apphud.placements()
+        return placements.first(where: {pl in pl.identifier == placementIdentifier})?.paywall
     }
 
     private static func handlePurchase(response:ApphudPurchaseResult, callback: @escaping (String) -> Void) {

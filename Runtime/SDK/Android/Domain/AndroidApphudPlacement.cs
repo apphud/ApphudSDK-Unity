@@ -10,7 +10,8 @@ namespace Apphud.Unity.Android.Domain
         internal AndroidApphudPlacement(AndroidJavaObject javaObject)
         {
             Identifier = javaObject.Get<string>("identifier");
-            Paywall = new AndroidApphudPaywall(javaObject.Get<AndroidJavaObject>("paywall"));
+            AndroidJavaObject javaPaywall = javaObject.Get<AndroidJavaObject>("paywall");
+            Paywall = javaPaywall != null ? new AndroidApphudPaywall(javaPaywall) : null;
         }
     }
 }

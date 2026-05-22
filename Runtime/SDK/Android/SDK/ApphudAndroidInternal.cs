@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Apphud.Unity.Android.Domain;
 using Apphud.Unity.Domain;
 using UnityEngine;
@@ -38,7 +39,8 @@ namespace Apphud.Unity.Android.SDK
                 AndroidApp.CurrentActivity,
                 apiKey,
                 observerMode,
-                new KotlinActionWrapper1(p1 => callback(new AndroidApphudUser(p1)), _debugLogsEnabled)
+                new ApphudRuleCallbackProxy(),
+                new KotlinActionWrapper1(p1 => callback?.Invoke(p1 != null ? new AndroidApphudUser(p1) : null), _debugLogsEnabled)
             );
         }
 
@@ -50,7 +52,8 @@ namespace Apphud.Unity.Android.SDK
                apiKey,
                userId,
                observerMode,
-               new KotlinActionWrapper1(p1 => callback(new AndroidApphudUser(p1)), _debugLogsEnabled)
+               new ApphudRuleCallbackProxy(),
+               new KotlinActionWrapper1(p1 => callback?.Invoke(p1 != null ? new AndroidApphudUser(p1) : null), _debugLogsEnabled)
            );
         }
 
@@ -73,7 +76,7 @@ namespace Apphud.Unity.Android.SDK
             }, _debugLogsEnabled));
         }
 
-        internal static void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int? maxAttempts)
+        internal static void FetchPlacements(Action<List<ApphudPlacement>, ApphudError> callback, int? maxAttempts, bool forceRefresh)
         {
             using (AndroidJavaClass apphudClass = new AndroidJavaClass("com.apphud.sdk.ApphudErrorKt"))
             {
@@ -82,31 +85,11 @@ namespace Apphud.Unity.Android.SDK
                 Instance.Call(
                     "fetchPlacements",
                     defaultMaxTimeout,
+                    forceRefresh,
                     new KotlinActionWrapper2((javaApphudPlacementList, javaApphudError) => callback(
                         new JavaList<ApphudPlacement>(
                             javaApphudPlacementList,
                             javaApphudPlacement => new AndroidApphudPlacement(javaApphudPlacement)
-                        ),
-                        javaApphudError != null ? new AndroidApphudError(javaApphudError) : null),
-                        _debugLogsEnabled
-                    )
-                );
-            }
-        }
-
-        internal static void PaywallsDidLoadCallback(Action<List<ApphudPaywall>, ApphudError> callback, int? maxAttempts)
-        {
-            using (AndroidJavaClass apphudClass = new AndroidJavaClass("com.apphud.sdk.ApphudErrorKt"))
-            {
-                double defaultMaxTimeout = apphudClass.GetStatic<double>("APPHUD_DEFAULT_MAX_TIMEOUT");
-
-                Instance.Call(
-                    "paywallsDidLoadCallback",
-                    defaultMaxTimeout,
-                    new KotlinActionWrapper2((javaApphudPaywallsList, javaApphudError) => callback(
-                        new JavaList<ApphudPaywall>(
-                            javaApphudPaywallsList,
-                            javaApphudPaywall => new AndroidApphudPaywall(javaApphudPaywall)
                         ),
                         javaApphudError != null ? new AndroidApphudError(javaApphudError) : null),
                         _debugLogsEnabled
@@ -156,11 +139,6 @@ namespace Apphud.Unity.Android.SDK
             Instance.Call("paywallShown", AndroidApphudPaywall.GetJavaObject(paywall));
         }
 
-        internal static void PaywallClosed(ApphudPaywall paywall)
-        {
-            Instance.Call("paywallClosed", AndroidApphudPaywall.GetJavaObject(paywall));
-        }
-
         internal static void Purchase(ApphudProduct product, string offerIdToken = null, string oldToken = null, int? replacementMode = null, bool consumableInAppProduct = false, Action<ApphudPurchaseResult> callback = null)
         {
             Instance.Call(
@@ -175,22 +153,43 @@ namespace Apphud.Unity.Android.SDK
              );
         }
 
-        internal static void RestorePurchases(Action<List<ApphudSubscription>, List<ApphudNonRenewingPurchase>, ApphudError> callback)
+        internal static void RestorePurchases(Action<ApphudSubscription, ApphudNonRenewingPurchase, ApphudError> callback)
         {
             Instance.Call(
                   "restorePurchases",
-                  new KotlinActionWrapper3((javaApphudSubscriptionsList, javaApphudNonRenewingPurchasesList, javaApphudError) => callback(
-                      new JavaList<ApphudSubscription>(
-                          javaApphudSubscriptionsList,
-                          javaApphudSubscription => new AndroidApphudSubscription(javaApphudSubscription)
-                      ),
-                      new JavaList<ApphudNonRenewingPurchase>(
-                          javaApphudNonRenewingPurchasesList,
-                          javaApphudNonRenewingPurchase => new AndroidApphudNonRenewingPurchase(javaApphudNonRenewingPurchase)
-                      ),
-                      javaApphudError != null ? new AndroidApphudError(javaApphudError) : null),
-                      _debugLogsEnabled
-                  )
+                  new KotlinActionWrapper1(javaResult =>
+                  {
+                      if (javaResult == null)
+                      {
+                          callback(null, null, null);
+                          return;
+                      }
+
+                      string resultClassName = javaResult.Call<AndroidJavaObject>("getClass").Call<string>("getName");
+
+                      if (resultClassName.EndsWith("$Success"))
+                      {
+                          List<ApphudSubscription> subscriptions = new JavaList<ApphudSubscription>(
+                              javaResult.Call<AndroidJavaObject>("getSubscriptions"),
+                              javaApphudSubscription => new AndroidApphudSubscription(javaApphudSubscription)
+                          );
+                          List<ApphudNonRenewingPurchase> nonRenewingPurchases = new JavaList<ApphudNonRenewingPurchase>(
+                              javaResult.Call<AndroidJavaObject>("getPurchases"),
+                              javaApphudNonRenewingPurchase => new AndroidApphudNonRenewingPurchase(javaApphudNonRenewingPurchase)
+                          );
+
+                          callback(
+                              subscriptions?.FirstOrDefault(s => s.IsActive) ?? subscriptions?.FirstOrDefault(),
+                              nonRenewingPurchases?.FirstOrDefault(p => p.IsActive) ?? nonRenewingPurchases?.FirstOrDefault(),
+                              null
+                          );
+                      }
+                      else
+                      {
+                          AndroidJavaObject javaApphudError = javaResult.Call<AndroidJavaObject>("getError");
+                          callback(null, null, javaApphudError != null ? new AndroidApphudError(javaApphudError) : null);
+                      }
+                  }, _debugLogsEnabled)
               );
         }
 
@@ -203,7 +202,7 @@ namespace Apphud.Unity.Android.SDK
         {
             Instance.Call(
                 "refreshUserData",
-                new KotlinActionWrapper1(p1 => callback(new AndroidApphudUser(p1)), _debugLogsEnabled)
+                new KotlinActionWrapper1(p1 => callback?.Invoke(p1 != null ? new AndroidApphudUser(p1) : null), _debugLogsEnabled)
             );
         }
 
@@ -271,10 +270,11 @@ namespace Apphud.Unity.Android.SDK
 
         internal static void SetHeaders()
         {
-            using (var headersInterceptor = new AndroidJavaClass("com.apphud.sdk.managers.HeadersInterceptor"))
+            using (var sdkHeadersClass = new AndroidJavaClass("com.apphud.sdk.internal.data.network.SdkHeaders"))
+            using (var instance = sdkHeadersClass.GetStatic<AndroidJavaObject>("INSTANCE"))
             {
-                headersInterceptor.SetStatic("X_SDK_VERSION", "1.1.0");
-                headersInterceptor.SetStatic("X_SDK", "unity");
+                instance.Call("setX_SDK_VERSION", "1.5.0");
+                instance.Call("setX_SDK", "unity");
             }
         }
     }
